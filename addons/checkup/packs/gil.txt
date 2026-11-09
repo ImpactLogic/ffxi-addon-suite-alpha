@@ -1,0 +1,9 @@
+# Gil (not shown yet): hidden from the //setup list until it has been seen working. //setup tick gil still works.
+name: Gil (price evidence)
+desc: Bazaar and vendor price capture
+status: private
+hidden: yes
+atlas: economy
+part: ffxibazaar cmd=bzr box
+part: pricelog cmd=pl
+part: vendorguard cmd=vg

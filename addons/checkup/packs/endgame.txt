@@ -1,0 +1,8 @@
+name: Endgame (damage and enmity)
+desc: Damage and enmity meters with buffs and recasts
+status: launch
+atlas: gear-lab
+part: battlelines cmd=bl box
+part: enmitylines cmd=el box
+part: buffbox cmd=bb box
+part: timers cmd=tm box

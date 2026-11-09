@@ -1,0 +1,7 @@
+# Always on, for every player from the first setup: the passive collectors. They only read what the client already hands over
+# (bags, points, currencies, quest/mission pages, warp masks at login, ...) and write local files. Evidence recorders are NOT here: //rec.
+name: Passive collection (everyone)
+desc: charsync reads your character's state quietly so every tool can answer "what next"
+always: yes
+atlas: character
+part: charsync cmd=cs

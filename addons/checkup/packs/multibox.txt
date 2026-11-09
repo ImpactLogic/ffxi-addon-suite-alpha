@@ -1,0 +1,8 @@
+# Multibox (preview)
+name: Multibox
+desc: Two-box movement, sneak/invisible and follow tools (Offhand is a separate app)
+status: preview
+atlas: padrelay
+part: convoy cmd=cv
+part: sneakinvis cmd=si
+part: mimic cmd=mim box

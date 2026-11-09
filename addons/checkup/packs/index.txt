@@ -1,0 +1,5 @@
+# Setup modules supported by this release.
+module: all
+module: story
+module: gear
+preset: new = story

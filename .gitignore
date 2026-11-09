@@ -1,0 +1,31 @@
+# Local assistant settings, transcripts, commands and scratch work.
+# Keep reviewed AGENTS.md and CLAUDE.md in source when needed.
+.claude/
+.codex/
+.agents/
+CLAUDE.local.md
+AGENTS.override.md
+.mcp.json
+
+# Credentials and local environment files.
+.env
+.env.*
+.aws/
+.ssh/
+secrets/
+credentials/
+credentials.json
+auth.json
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Player data and diagnostic exports.
+data/
+private/
+settings.xml
+*.log
+*.jsonl
+Offhand-for-Claude-*.zip
+Offhand-diagnostics-*.zip
