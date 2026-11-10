@@ -12,7 +12,7 @@
 --(a recorder with no file today may just have had nothing to record).
 _addon.name = 'checkup'
 _addon.author = 'ImpactLogic'
-_addon.version = '0.5.9'   -- bump on every change that reaches the game
+_addon.version = '0.5.10'   -- bump on every change that reaches the game
 _addon.commands = {'checkup', 'ck', 'rec', 'setup'}
 
 config = require('config')
@@ -97,6 +97,30 @@ local function read(rel)
     return text
 end
 
+-- Recorders that are installed (so //rec never talks about add-ons this package does not include).
+local function installed_recorders()
+    local list = {}
+    if rec_ok then
+        for _, n in ipairs(recording.RECORDERS) do
+            if read(n .. '/' .. n .. '.lua') then list[#list + 1] = n end
+        end
+    end
+    return list
+end
+
+local function rec_lines()
+    local list = installed_recorders()
+    if #list == 0 then return {'no recorder is installed, so nothing is being recorded'} end
+    local out, any = {}, false
+    for _, n in ipairs(list) do
+        local on = recording.enabled(n)
+        any = any or on
+        out[#out + 1] = ('  %s: %s'):format(n, on and 'ON' or 'off')
+    end
+    table.insert(out, 1, any and 'recording is ON for:' or 'recording is OFF: nothing is being saved. Turn one on with //rec on <name>, for example //rec on combatlog')
+    return out
+end
+
 local function char()
     local player = windower.ffxi.get_player()
     return player and player.name or nil
@@ -110,7 +134,7 @@ local function check(short)
 end
 
 local function colour_of(line)
-    if line:match('^ok') or line == 'all set' then return 207 end
+    if line:match('^ok') or line:match('^note') or line == 'all set' then return 207 end
     return 167
 end
 
@@ -166,7 +190,7 @@ end
 
 local function handle_setup(a, b)
     local packs, idx = setup_packs()
-    if #packs == 0 then msg('no setup modules found: deploy checkup again') return end
+    if #packs == 0 then msg('no setup modules found: the checkup/packs folder is missing. Copy the checkup folder from the download again.') return end
     local ids = {}
     for _, p in ipairs(packs) do ids[#ids + 1] = p.id end
     local ticked = setup.ids_to_set(settings.setup_modules)
@@ -201,15 +225,17 @@ local function handle_setup(a, b)
     local name = char()
     if need_ok and name then
         local rows = needcore.need(function(file) return read('charsync/data/' .. name .. '/' .. file) end, os.time())
-        local lines, todo = needcore.render(rows, true)
-        msg(todo == 0 and 'your data: nothing required right now' or ('your data: ' .. todo .. ' thing(s) to do in game (//cs need):'))
-        for _, l in ipairs(lines) do msg(l) end
+        local _, todo = needcore.render(rows, true)
+        msg(todo == 0 and 'your data: nothing to do in game right now' or ('your data: ' .. todo .. ' optional thing(s) to do in game; //cs need lists them'))
     end
-    msg('recording is separate: ' .. (rec_ok and recording.enabled('ffxilogger') and 'ON' or 'OFF') .. ' (//rec on|off). Nothing here turns it on.')
+    local on_list = {}
+    for _, n in ipairs(installed_recorders()) do if recording.enabled(n) then on_list[#on_list + 1] = n end end
+    msg('recording is separate and ' .. (#on_list > 0 and ('ON for ' .. table.concat(on_list, ', ')) or 'OFF') .. ' (//rec status). Nothing here turns it on.')
+    msg('//ck todo shows what needs doing; //ck full shows everything.')
 end
 
 local function handle(cmd, ...)
-    cmd = (cmd or 'all'):lower()
+    cmd = (cmd or 'setup'):lower()   -- bare //setup, //ck and //checkup all land here: the short setup view
     local a = ({...})[1]
     if cmd == 'version' then
         msg('version ' .. _addon.version)
@@ -219,8 +245,7 @@ local function handle(cmd, ...)
         config.save(settings)
         refresh_box()
         msg('box ' .. (settings.show_box and 'on' or 'off'))
-    elseif cmd == 'all' or cmd == 'todo' then
-        if cmd == 'all' then handle_setup(nil) end   -- bare //setup lands here too (Windower does not pass the alias)
+    elseif cmd == 'all' or cmd == 'full' or cmd == 'todo' then
         local lines = check(cmd == 'todo')
         if not lines then msg('not logged in') return end
         print_lines(lines)
@@ -232,18 +257,23 @@ local function handle(cmd, ...)
         handle_setup(a1, a2)
     elseif cmd == 'rec' or cmd == 'on' or cmd == 'off' or cmd == 'status' then
         -- //rec on|off [recorder] and //rec status arrive here as cmd = on|off|status; //ck rec ... as cmd = rec.
-        if not rec_ok then msg('recording.lua missing: deploy boxtheme again') return end
+        if not rec_ok then msg('recording.lua is missing: copy the boxtheme folder from the download again') return end
         local rest = {...}
         local verb, who = cmd, a
         if cmd == 'rec' then verb, who = a or 'status', rest[2] end
         if verb == 'on' or verb == 'off' then
+            if who and who ~= 'all' and not read(who:lower() .. '/' .. who:lower() .. '.lua') then
+                msg(who .. ' is not installed here. Installed recorders: ' .. (#installed_recorders() > 0 and table.concat(installed_recorders(), ', ') or 'none'))
+                return
+            end
             if not recording.set(who, verb == 'on') then msg('could not write recording.cfg') return end
-            msg((who or 'all recorders') .. ' ' .. verb .. '. ffxilogger, pricelog and combatlog follow within 10 s; harness needs //lua r harness.')
+            msg((who or 'all recorders') .. ' ' .. verb .. '. It takes effect within 10 seconds.'
+                .. ((verb == 'on' and who and who ~= 'all') and (' Make sure it is loaded: //lua l ' .. who:lower()) or ''))
         end
-        print_lines(recording.status())
+        for _, l in ipairs(rec_lines()) do msg(l) end
     elseif cmd == 'addons' then
         local ok, reg = pcall(require, 'registry')
-        if not ok or type(reg) ~= 'table' then msg('registry.lua missing: deploy checkup again') return end
+        if not ok or type(reg) ~= 'table' then msg('registry.lua is missing: copy the checkup folder from the download again') return end
         local function installed(name)
             local text = read(name .. '/' .. name .. '.lua')
             return text and text:match("_addon%.version%s*=%s*['\"]([^'\"]+)['\"]") or nil
@@ -262,12 +292,12 @@ local function handle(cmd, ...)
         local now = os.time()
         local need = {}
         for _, l in ipairs((core.render(core.setup(read, name, now), core.recorders(read, name, now), core.addons(read, now), true))) do
-            if not l:match('^ok') and l ~= 'all set' then need[#need + 1] = l end
+            if not l:match('^ok') and not l:match('^note') and l ~= 'all set' then need[#need + 1] = l end
         end
         print_lines((core.depart({name = name, zone = zone, bags = bags, todo = need,
             manual = (function() local o = {} for w in tostring(settings.depart_manual or ''):gmatch('[^,]+') do o[#o + 1] = (w:gsub('^%s+', ''):gsub('%s+$', '')) end return o end)(), low = settings.depart_low})))
     elseif cmd == 'help' then
-        msg('//setup [tick|untick <module>|preset <name>|apply|skip] | //rec on|off|status [recorder] | //checkup [all] | todo | depart | addons [all|automation|word] | box [on|off] | version  -- read-only: reads the other addons\' files')
+        msg('//setup [tick|untick <module>|preset <name>|apply|skip] | //rec on|off|status [recorder] | //ck todo | full | depart | addons [all|word] | box [on|off] | version  -- read-only: reads the other addons\' files')
     else
         msg('unknown command; //checkup help')
     end
@@ -278,7 +308,8 @@ windower.register_event('addon command', guarded('command', handle))
 windower.register_event('load', guarded('load', function()
     msg('loaded version ' .. _addon.version .. '  (//checkup, //ck)  read-only')
     if not settings.setup_asked then
-        msg('First time? Type //setup to tick what you want. Recording defaults to OFF; //rec status checks it.')
+        msg('First time? Type //setup to tick what you want. Recording is OFF until you turn it on (//rec status).')
+        msg('To load these add-ons every time you start the game, add the line  lua load checkup  to Windower4/scripts/init.txt (see the README, step 4).')
     end
     refresh_box()
 end))
@@ -287,9 +318,9 @@ end))
 windower.register_event('login', function()
     coroutine.schedule(guarded('login', function()
         if settings.on_login then
-            local lines, todo = check(true)
-            -- Only when a setup fact needs doing: right after login no recorder has written yet today.
-            if lines and (todo or 0) > 0 then print_lines(lines) end
+            local _, todo = check(true)
+            -- One line, and only when a setup fact needs doing: right after login no recorder has written yet today.
+            if (todo or 0) > 0 then msg(todo .. ' optional setup item(s) to do in game; //ck todo lists them, //setup picks what to load.') end
         end
         if settings.setup_apply_on_login and settings.setup_asked then
             local ok, packs = pcall(setup_packs)

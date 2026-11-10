@@ -5,7 +5,7 @@
 
 _addon.name = 'storyguide'
 _addon.author = 'ImpactLogic'
-_addon.version = '0.18.0'   -- bump on every change that reaches the game
+_addon.version = '0.18.1'   -- bump on every change that reaches the game
 _addon.commands = {'storyguide', 'sg'}
 
 config = require('config')
@@ -26,7 +26,7 @@ local defaults = {
     log_max_kb = 256,
     show_box = true,   -- the repo-wide display switch: //sg box [on|off]
     inferred_triggers = false, -- opt-in wording suggestions; never confirmed progress
-    track = 'chains-of-promathia',
+    track = '',   -- no storyline until the player picks one: //sg list, then //sg track <name>
     auto = true,   -- master switch for ticks the add-on makes itself (curated triggers and guesses); //sg auto [on|off]. The evidence log is always written.
     welcomed = false,   -- the welcome text has been shown once; //sg welcome shows it again
     notify = false,   -- one chat line when a step ticks itself; //sg notify [on|off]
@@ -544,7 +544,16 @@ end
 local function refresh()
     if not sync_char() then box:hide(); lbox:hide(); dbox:hide(); return end
     local track, slug = current_track()
-    if not track then box.text = 'storyguide: no track "' .. tostring(settings.track) .. '"; //sg list'; return end
+    if not track then
+        local lines = {'Story Guide v' .. _addon.version, 'Pick a storyline: //sg track <name or number>', ''}
+        local names = {}
+        for name in pairs(tracks) do names[#names + 1] = name end
+        table.sort(names)
+        for i, name in ipairs(names) do lines[#lines + 1] = ('%2d. %s'):format(i, name) end
+        box.text = table.concat(lines, NL)
+        lbox.text, dbox.text = '', ''
+        return
+    end
     refresh_key_items()
     local cstate = track_state(slug)
     local index, source, note = core.position(track, cstate)
@@ -686,9 +695,9 @@ windower.register_event('zone change', guarded('zone', function() state.dirty = 
 -- Commands
 -------------------------------------------------------------------------------
 local function show_welcome()
-    msg('Story Guide: a read-only, step-by-step guide. The yellow line is what to do now; click a step to tick it, click again to untick.')
-    msg('Defaults (change any with the command): one box with Steps | List tabs (//sg layout two), steps tick themselves from what the game shows (//sg auto off),')
-    msg('no chat line when one does (//sg notify on), goal and requirements closed (click Details or //sg details), compact view off (//sg compact on). //sg help lists everything.')
+    msg('Story Guide is a mission tracker: it lists every mission in order and keeps your place. It has no walkthrough steps yet.')
+    msg('To start: //sg list shows the storylines, //sg track <name> picks one, and //sg at <mission> says where you are (check your Mission menu in game).')
+    msg('//sg help lists every command. //sg box off hides the boxes.')
     settings.welcomed = true; config.save(settings)
 end
 
@@ -753,9 +762,10 @@ windower.register_event('addon command', guarded('command', function(cmd, ...)
         local names = {}
         for name in pairs(tracks) do names[#names + 1] = name end
         table.sort(names)
-        msg('tracks: ' .. table.concat(names, ', ') .. '  (now: ' .. tostring(settings.track) .. ')')
+        msg('storylines (pick one with //sg track <name or number>; now: ' .. (settings.track ~= '' and settings.track or 'none') .. '):')
+        for i, name in ipairs(names) do msg(('%2d. %s  -  %s'):format(i, name, tracks[name].storyline or name)) end
     elseif cmd == 'open' then
-        if not track then msg('no track loaded'); return end
+        if not track then msg('pick a storyline first: //sg list, then //sg track <name>'); return end
         local index = tonumber(rest) or core.find(track, rest)
         if not (index and track.missions[index]) then msg('//sg open <number or name>: see the list view (//sg view list)'); return end
         state.preview, state.page, state.scroll, state.tab = index, 0, nil, 'steps'
@@ -765,10 +775,28 @@ windower.register_event('addon command', guarded('command', function(cmd, ...)
         state.preview, state.page, state.scroll = nil, 0, nil; state.dirty = true
         msg('showing your position')
     elseif cmd == 'track' then
-        if tracks[rest] then settings.track = rest; config.save(settings); state.dirty = true; msg('showing ' .. rest)
-        else msg('no such track; //sg list') end
+        local names = {}
+        for name in pairs(tracks) do names[#names + 1] = name end
+        table.sort(names)
+        local function squash(text) return (core.norm(text):gsub('%s', '')) end
+        local want, found = squash(rest), {}
+        if tracks[rest] then found = {rest}
+        elseif tonumber(rest) and names[tonumber(rest)] then found = {names[tonumber(rest)]}
+        elseif want ~= '' then
+            for _, name in ipairs(names) do   -- the whole name first, then any part of the slug or the storyline's title
+                if squash(name) == want or squash(tracks[name].storyline or '') == want then found = {name} break end
+            end
+            if #found == 0 then
+                for _, name in ipairs(names) do
+                    if squash(name):find(want, 1, true) or squash(tracks[name].storyline or ''):find(want, 1, true) then found[#found + 1] = name end
+                end
+            end
+        end
+        if #found == 1 then settings.track = found[1]; config.save(settings); state.dirty = true; msg('showing ' .. found[1])
+        elseif #found > 1 then msg('more than one storyline matches: ' .. table.concat(found, ', ') .. '. Type more of the name or use its number (//sg list).')
+        else msg('no storyline called "' .. rest .. '". //sg list shows them.') end
     elseif cmd == 'at' then
-        if not track then msg('no track loaded'); return end
+        if not track then msg('pick a storyline first: //sg list, then //sg track <name>'); return end
         local index = core.find(track, rest)
         if not index then msg('no mission matching "' .. rest .. '" in ' .. track.storyline); return end
         local value = track_state(slug).value
@@ -827,9 +855,9 @@ windower.register_event('addon command', guarded('command', function(cmd, ...)
     elseif cmd == 'version' then
         msg('version ' .. _addon.version)
     elseif cmd == 'status' then
-        local index, source, note = nil, nil, 'no track'
+        local index, source, note = nil, nil, 'no storyline picked yet: //sg list, then //sg track <name>'
         if track then index, source, note = core.position(track, track_state(slug)) end
-        msg(('read-only; track %s; %s'):format(tostring(settings.track), index and (track.missions[index].name .. ' (' .. tostring(source) .. ')') or tostring(note)))
+        msg(('read-only; track %s; %s'):format(settings.track ~= '' and tostring(settings.track) or '(none)', index and (track.missions[index].name .. ' (' .. tostring(source) .. ')') or tostring(note)))
     else
         help()
     end
@@ -839,8 +867,8 @@ windower.register_event('load', guarded('load', function()
     load_tracks()
     local count = 0
     for _ in pairs(tracks) do count = count + 1 end
-    msg(('loaded version %s; read-only (sends nothing); %d track(s); //sg help'):format(_addon.version, count))
+    msg(('loaded version %s; read-only (sends nothing); %d storylines; //sg help'):format(_addon.version, count))
     msg('wording suggestions ' .. (settings.inferred_triggers and 'on' or 'off') .. '; //sg infer on|off; [~] is unconfirmed')
-    if count == 0 then msg('no tracks found in storyguide/tracks: run tools/build-storyguide.py and deploy') end
+    if count == 0 then msg('no storylines found: copy the storyguide folder from the download again (the skeleton folder is missing)') end
     if not settings.welcomed then show_welcome() end
 end))

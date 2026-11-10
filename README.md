@@ -2,17 +2,18 @@
 
 <img src="brand.svg" alt="FFXI Addon Suite logo" width="64">
 
-**WRITES TO YOUR DISK: the combat recorder (combatlog) saves your combat to files on your computer once recording is on. Recording ships OFF: combat files are written only after you type `//rec on combatlog`, and `//rec off combatlog` stops them. The files go to `Windower4/addons/combatlog/data/<Character>/` (about 1.3 MB per day of play on average, 11 MB on the busiest day measured, never deleted for you), and nothing is uploaded. Read the notice at the top of `addons/combatlog/README.md` before you turn it on.**
+**WRITES TO YOUR DISK: the combat recorder (combatlog) saves your combat to files on your computer once recording is on. Recording ships OFF: combat files are written only after you load Checkup and Combatlog (`//lua l checkup`, `//lua l combatlog`) and type `//rec on combatlog`; `//rec off combatlog` stops them. The files go to `Windower4/addons/combatlog/data/<Character>/` (about 1.3 MB per day of play on average, 11 MB on the busiest day measured, never deleted for you), and nothing is uploaded. Read the notice at the top of `addons/combatlog/README.md` before you turn it on.**
 
 **Free and non-commercial: no ads, no donations, no paid tier, nothing is sold.** The code is MIT licensed.
 
-A set of small, read-only add-ons for Final Fantasy XI on [Windower 4](https://www.windower.net/): themed boxes for buffs, recasts, bags and a damage meter, a step-by-step mission guide, a character snapshot, and a setup checklist that ties them together. They are one person's hobby project, written with an AI coding assistant, and they come with no promises.
+A set of small, read-only add-ons for Final Fantasy XI on [Windower 4](https://www.windower.net/): themed boxes for buffs, recasts, bags and a damage meter, a mission tracker, a character snapshot, and a setup checklist that ties them together. They are one person's hobby project, written with an AI coding assistant, and they come with no promises.
 
 ## Quick start
 
-Copy the nine folders in `addons/` into Windower's `addons/` folder. In game, try `//lua l bags`, then
-`//bags layout compact` and `//bags box on`. To try the guided setup, load Checkup with `//lua l checkup`
-and type `//setup`.
+1. Download the ZIP under **Assets** on the latest [release](../../releases) and unzip it anywhere.
+2. Double-click **`Install-FFXI-Addon-Suite.bat`**. It finds your Windower folder (or asks you to pick it) and copies the nine add-on folders in.
+3. In the game, type the commands below into the chat line (press Enter, then type). Try `//lua l bags`, then `//bags layout compact` and `//bags box on`.
+4. To try the guided setup, type `//lua l checkup`, then `//setup`.
 
 Charsync writes a local character snapshot when loaded, including through setup. Combatlog saves combat
 captures only when enabled. The table below describes the local files each addon creates.
@@ -26,15 +27,17 @@ captures only when enabled. The table below describes the local files each addon
 
 ## Install
 
-1. Download this repository (green **Code** button, then **Download ZIP**) and unzip it.
-2. Copy the folders inside `addons/` that you want into `Windower4/addons/`. If you copy only some, also copy `boxtheme` (the shared box look) and `checkup`.
-3. In game, load each one with `//lua l <name>` (for example `//lua l buffbox`). After you replace the files of an add-on that is already loaded, reload it with `//lua r <name>`.
-4. Optional: type `//setup` (alias `//ck`). It lists *modules* as check boxes, such as Story or Gear and character. `//setup tick story` then `//setup apply` loads the add-ons and boxes that module needs, and ticked modules are re-applied 30 seconds after login. Nothing is ever unloaded, and recording is never part of a module: it stays under `//rec`.
-5. To show or hide an add-on's box: `//<command> box on` or `//<command> box off`.
+1. Download the ZIP under **Assets** on the latest [release](../../releases) (not "Source code") and unzip it anywhere, for example in your Downloads folder. The green **Code** button, then **Download ZIP**, also works.
+2. Double-click **`Install-FFXI-Addon-Suite.bat`**. It looks for `Windower4`, asks you to pick the folder if it cannot find it, copies the nine folders into `Windower4\addons`, leaves every `data` folder alone, and tells you whether it worked.
+   *By hand instead:* copy the nine folders inside `addons/` into the `addons` folder inside your Windower4 folder. You have it right when `Windower4\addons\bags\bags.lua` exists. The nine folders belong together: `//setup` needs at least `checkup` and `charsync`, and every add-on looks for `boxtheme` for its box background (without it the boxes are plain).
+3. In the game, type commands into the chat line (press Enter, then type). Load an add-on with `//lua l <name>`, for example `//lua l bags`. After you replace the files of an add-on that is already loaded, reload it with `//lua r <name>`.
+4. **To have them load every time you start the game,** open `Windower4\scripts\init.txt` in Notepad and add the line `lua load checkup` (the installer offers to do this for you). Without it, nothing is loaded after you restart the game. Checkup then loads the add-ons you ticked in step 5, about 30 seconds after you log in.
+5. Optional: type `//setup` (alias `//ck`). It lists *modules* as check boxes, such as Story or Gear and character. `//setup tick story` then `//setup apply` loads the add-ons and boxes that module needs, and ticked modules are re-applied 30 seconds after login. Nothing is ever unloaded, and recording is never part of a module: it stays under `//rec`.
+6. To show or hide an add-on's box: `//<command> box on` or `//<command> box off`.
 
-`//setup` offers **Story** and **Gear and character** when their add-ons are installed. Install all suite folders to use both modules. Applying setup also loads Charsync if present, which saves character snapshots locally. See the Charsync row below.
+`//setup` offers **Story** and **Gear and character**. Applying setup also loads Charsync, which saves character snapshots locally. See the Charsync row below.
 
-To update, copy the new addon files into the existing folders and keep your data folders. To remove an addon, unload it with //lua u <name> and move its folder out of Windower. Keep a backup if you want to retain its settings or recordings.
+To update, run the installer from the new ZIP (it keeps your data folders), then reload what you use with `//lua r <name>`. To remove an add-on, unload it with `//lua u <name>` and move its folder out of Windower. Keep a backup if you want to retain its settings or recordings.
 
 ## What is in the package
 
@@ -43,16 +46,14 @@ Each add-on's own README has the full command list and file list. Every one also
 | Add-on | What it does | Main commands | What it writes (in `Windower4/addons/<name>/data/`) | Status |
 |---|---|---|---|---|
 | **boxtheme** | Themed backgrounds, locks and accents for every box the other add-ons draw; also the `//rec` master switch for recorders | `//boxtheme`, `//boxtheme <addon> <theme>`, `//rec on\|off\|status` | `themes.txt`, `locks.txt`, `screens.txt`, `recording.cfg` | not confirmed |
-| **buffbox** | Your buffs with time left, what your food gives, Corsair roll values, Bard song potency, Ionis coalition info, a low-time warning and a buff history | `//bb`, `//bb box`, `//bb layout full\|compact`, `//bb history`, `//bb warn` | `<Character>/food.txt`, `history.tsv`, `coalitions.tsv`, `stats.log` | confirmed |
-| **timers** | Ability and spell recasts as a box with time bars; a Scholar stratagem charge row | `//tm box`, `//tm abilities`, `//tm spells`, `//tm rows <n>` | log only | not confirmed |
-| **bags** | How full each bag is, as bubbles or numbers, with a low-space warning | `//bags box`, `//bags mode bubbles\|numbers\|both`, `//bags warn <n>` | log only | not confirmed |
+| **buffbox** | Your buffs with time left, what your food gives, Corsair roll values, Bard song potency, Ionis coalition info, a low-time warning and a buff history | `//bb`, `//bb box on\|off`, `//bb layout full\|compact`, `//bb history`, `//bb warn` | `<Character>/food.txt`, `history.tsv`, `coalitions.tsv`, `stats.log` | confirmed |
+| **timers** | Ability and spell recasts as a box with time bars; a Scholar stratagem charge row | `//tm box on\|off`, `//tm abilities on\|off`, `//tm spells on\|off`, `//tm rows <n>` | log only | not confirmed |
+| **bags** | How full each bag is, as bubbles or numbers, with a low-space warning | `//bags box on\|off`, `//bags mode bubbles\|numbers\|both`, `//bags warn <n>` | log only | not confirmed |
 | **battlelines** | A damage meter: damage, damage taken, healing, deaths, enmity, per fight | `//bl box`, `//bl view <tab>`, `//bl mode current\|overall\|last`, `//bl report <channel>` | `fights.tsv` | not confirmed |
-| **storyguide** | A storyline tracker for missions and the quests that ride along with them: your place in each storyline, your own confirmations and ticks, and an evidence log. It lists every mission and quest by name in order; it ships no walkthrough text (see below) | `//sg box`, `//sg list`, `//sg track <name>`, `//sg at <mission>`, `//sg done <n>` | per-character progress and evidence files (`.tsv`) | not confirmed |
+| **storyguide** | A storyline tracker for missions and the quests that ride along with them: your place in each storyline, your own confirmations and ticks, and an evidence log. It lists every mission and quest by name in order; it ships no walkthrough text (see below) | `//sg box on\|off`, `//sg list`, `//sg track <name or number>`, `//sg at <mission>` | per-character progress and evidence files (`.tsv`) | not confirmed |
 | **charsync** | A snapshot of one character: every item in every bag with augments, gil, jobs, equipment, key items, points, currencies, REMA weapons and quest/mission pages seen so far. It saves on load, 10 seconds after login and after every zone | `//cs`, `//cs status`, `//cs need`, `//cs last`, `//cs points`, `//cs rema` | `<Character>/snapshot.tsv`, `history/`, `points.tsv`, `rema.tsv`, `currencies.tsv`, progress files, and `contributor.txt` (a random id, never a character name) | confirmed (2026-10-04, earlier version) |
-| **checkup** | One command that says which facts the other add-ons hold are missing or old, which recorders stopped writing, and which add-ons have errors in their logs; also `//setup` | `//ck`, `//ck todo`, `//ck addons`, `//ck depart`, `//setup`, `//rec` | `checkup.log` | not confirmed |
+| **checkup** | One command that says which facts the other add-ons hold are missing or old, which recorders stopped writing, and which add-ons have errors in their logs; also `//setup` | `//setup`, `//ck todo`, `//ck full`, `//ck addons`, `//ck depart`, `//rec on\|off <name>` | `checkup.log` | not confirmed |
 | **combatlog** | Records your combat to daily files (and a live box). **Off by default**, see the notice at the top | `//rec on\|off` to record; the add-on's own README lists the rest | `<Character>/combat-<date>.tsv`, `contributor.txt`, `shared/region_zones.txt` | confirmed earlier; the `//rec` switch hook (1.4.0) is tested offline only |
-
-`checkup` also looks for the chat and bazaar recorders (`ffxilogger`, `ffxibazaar`). Those are not part of this package; it will report them as not found.
 
 Also included: `templates/addon/`, a starting folder for writing your own add-on.
 
