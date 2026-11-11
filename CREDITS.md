@@ -19,14 +19,7 @@ The forks keep their authors' copyright notices and licences. Who wrote what, un
 - **Boxtheme textures:** generated from original gradients and shapes by `tools/make-boxtheme-art.lua`. The PNGs contain no game screenshots.
 - **XIchecklist** (HiPotion): its story map is the source of the id tables Story Guide uses to read where a character is in a storyline. The tables are
   generated locally and not shipped. Its author describes it as free to use, share and edit ("free to use/share/edit/anything"); that is an informal statement, not a licence file, so it is credited here.
-- **Remapster** (AkadenTK): the Mappy map image pack that the `atlasmap` addon can draw, CC BY-SA 4.0. The images are downloaded by the user, not
-  shipped here.
 - **Game data**: item, spell, zone and key item names come from Windower's resource tables as installed.
-
-## Offhand (controller tool)
-
-Offhand's own dependencies and their licences (ViGEmBus, HidHide, Vortice.DirectInput, Nefarius.ViGEm.Client) are listed in
-`tools/pad-launcher/THIRD-PARTY-NOTICES.md`.
 
 ## This project
 

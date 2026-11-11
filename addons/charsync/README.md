@@ -13,7 +13,7 @@ consumption causes. Capture is read-only. Atlas pack/UI import is pending.
 After deployment, reload with `//lua r charsync`; offline checks do not verify
 the game's temporary-bag API behavior.
 
-**Read-only.** One whole snapshot of a character for the ffxi-atlas character page (IDEAS #60):
+**Read-only.** One whole snapshot of a character for the ffxi-atlas character page:
 every item in every bag with its augments, gil, job levels, what is equipped, and key items.
 It reads what the client already holds; nothing is ever sent.
 
@@ -55,7 +55,7 @@ when there is one, so one install is one contributor; otherwise charsync makes i
 ffxi-atlas `store.pack pull` copies `snapshot.tsv` into the character pack. Log: `data/charsync.log`.
 Offline test: `lua5.1 tools/test-charsync.lua`.
 
-## Since 0.2.0: points and rema live here (IDEAS #74 step 1)
+## Since 0.2.0: points and rema live here
 
 The retired `points` and `rema` addons' work now runs in charsync, from the same bag reads, each step
 isolated so one failing never stops the snapshot. Same file formats, now in `data/<Character>/`:
@@ -68,7 +68,7 @@ isolated so one failing never stops the snapshot. Same file formats, now in `dat
 `points capture` are gone. Switching over: `//lua u points`, `//lua u rema`, remove both from init.txt,
 `//lua l charsync`. Offline tests: `tools/test-points.lua`, `tools/test-rema.lua`, `tools/test-charsync-glue.lua`.
 
-## Since 0.3.0: quest and mission recorder (IDEAS #76)
+## Since 0.3.0: quest and mission recorder
 
 `progress.tsv` holds the newest raw copy of every incoming 0x056 packet (the client's quest and mission log
 pages), one row per page type: `captured, packet, type, size, hex`. Every change is also appended to
@@ -78,7 +78,7 @@ evidence later (`docs/PROGRESS-LOG.md` owns the format). The client only sends a
 open the Quest and Mission menus and click through every category, then `//charsync progress` lists what was
 recorded. Read-only: it never asks the server for anything.
 
-## Since 0.3.3: capture status (IDEAS #88)
+## Since 0.3.3: capture status
 
 `//charsync status` (or `//cs status`) reads saved captures and prints:
 
