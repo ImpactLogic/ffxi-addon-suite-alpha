@@ -8,6 +8,20 @@
 
 A set of small, read-only add-ons for Final Fantasy XI on [Windower 4](https://www.windower.net/): themed boxes for buffs, recasts, bags and a damage meter, a mission tracker, a character snapshot, and a setup checklist that ties them together. They are one person's hobby project, written with an AI coding assistant, and they come with no promises.
 
+## What it looks like
+
+![Several themed add-on boxes in game](docs/images/in-game-overview.png)
+
+Player and monster names are hidden in these pictures.
+
+| Bags (`//bags box on`) | Battle Lines (`//bl box on`) |
+|---|---|
+| ![Bags box showing bag space](docs/images/bags.png) | ![Battle Lines damage meter](docs/images/battlelines-damage.png) |
+
+Battle Lines also has an options page, reached by clicking **Options** in its box:
+
+![Battle Lines options](docs/images/battlelines-options.png)
+
 ## Quick start
 
 1. Download the ZIP under **Assets** on the latest [release](../../releases) and unzip it anywhere.
