@@ -1,4 +1,4 @@
---boxtheme: picks the background every addon box here draws (idea #57). READ-ONLY: it only writes its own
+--boxtheme: picks the background every addon box here draws. READ-ONLY: it only writes its own
 -- data/themes.txt; each addon's panel (boxpanel.lua) re-reads that file every 3 s.
 --   //boxtheme                      list the themes and what each box uses
 --   //boxtheme <theme>              every box that has no theme of its own
@@ -8,7 +8,7 @@
 
 _addon.name = 'boxtheme'
 _addon.author = 'ImpactLogic'
-_addon.version = '0.5.7'   -- bump on every change that reaches the game
+_addon.version = '0.5.8'   -- bump on every change that reaches the game
 _addon.commands = {'boxtheme', 'bt'}
 
 package.path = windower.addon_path .. '?.lua;' .. package.path

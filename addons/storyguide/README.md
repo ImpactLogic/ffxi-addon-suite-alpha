@@ -11,4 +11,3 @@ When a mission has step text, `//sg done <n>` and `//sg undo <n>` edit your chec
 
 See [original step authoring](own/README.md) for adding steps based on retail play.
 
-<img src="brand.svg" alt="Story Guide logo" width="64">

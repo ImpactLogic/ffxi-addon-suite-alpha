@@ -7,7 +7,7 @@ local core = {}
 
 local DAY = 86400
 
--- IDEAS #51: facts only an NPC or a menu tells you. `date_col` is the column holding the date the
+-- facts only an NPC or a menu tells you. `date_col` is the column holding the date the
 -- fact was read (the newest row wins). `how` is what to do in game when it is missing or stale.
 core.SETUP = {
     {id = 'coalitions', addon = 'buffbox', optional = true, label = 'Ionis coalitions', file = 'buffbox/data/<Char>/coalitions.tsv', date_col = 3,
@@ -22,21 +22,17 @@ core.SETUP = {
     {id = 'charsync', addon = 'charsync', label = 'character snapshot', file = 'charsync/data/<Char>/snapshot.tsv', date_key = 'captured=',
      stale = 7, how = 'load charsync (//lua l charsync): it saves on load, login and zoning'},
 }
--- On the list in IDEAS #51 but not readable yet: each needs its wording recorded first (evidence rule).
+-- On the list but not readable yet: each needs its wording recorded first (evidence rule).
 core.NOT_YET = {'nation rank (Signet)', 'mercenary rank (Sanction)', 'campaign medal (Sigil)'}
 
--- Recorders: is today's file there? `utc` for the addons that name files by UTC day (ffxilogger,
--- ffxibazaar), local day otherwise (combatlog).
+-- Recorders: is today's file there? `utc` marks add-ons that name files by UTC day, local day otherwise.
 core.RECORDERS = {
-    {id = 'ffxilogger', label = 'chat (ffxilogger)', file = 'ffxilogger/data/chatlog_<Char>_<day>.jsonl', utc = true},
     {id = 'combatlog', label = 'combat (combatlog)', file = 'combatlog/data/<Char>/combat-<day>.tsv'},
-    {id = 'ffxibazaar', label = 'bazaar (ffxibazaar)', file = 'ffxibazaar/data/bazaar_<Char>_<day>.jsonl', utc = true},
 }
 core.LOOKBACK = 14   -- days searched back for a recorder's last file
 
 -- Addons whose log is scanned for recent errors, and whose installed version is read.
-core.ADDONS = {'buffbox', 'combatlog', 'charsync', 'ffxilogger', 'ffxibazaar', 'cqshop', 'limbus',
-               'ambuscade', 'odyssey', 'pricelog', 'chocobo', 'convoy', 'stash', 'checkup'}
+core.ADDONS = {'bags', 'battlelines', 'boxtheme', 'buffbox', 'charsync', 'checkup', 'combatlog', 'storyguide', 'timers'}
 core.ERROR_DAYS = 7
 
 local function sub(path, char, day)
@@ -251,7 +247,7 @@ function core.registry(reg, installed, word)
     return L
 end
 
--- Departure check for `//ck depart` (IDEAS #41). Pure: the addon gathers the facts, this words them.
+-- Departure check for `//ck depart`. Pure: the addon gathers the facts, this words them.
 -- d = {name=, zone=, bags={{name=,count=,max=,enabled=}...}, todo=<setup/recorder lines needing doing>,
 --      manual={'free text', ...}, low=<free-slot warning level>}
 -- Unknown stays unknown: a bag the client reports as not enabled or without a max is listed as unknown, never ok.

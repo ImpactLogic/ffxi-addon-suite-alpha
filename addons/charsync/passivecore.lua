@@ -1,8 +1,7 @@
 -- Passive captures: packets the client sends on its own at login or zoning, kept raw, one row each, in
 -- passive.tsv. Nothing is decoded here and the player does nothing; //cs passive lists which have arrived,
--- which is the "captured" status a setup screen can show. Which packets exist and what they probably carry
--- comes from the XIchecklist add-on's handlers (checked: each arrives in Harness captures on every zone-in,
--- three characters, 2026-10-17); the field meanings are its claims, not ours.
+-- which is the "captured" status a setup screen can show. Packet ids and layouts follow Windower's packets
+-- library (addons/libs/packets/fields.lua); what each one means is not verified here, hence "(claimed)".
 local raw = require('progresscore')
 local core = {}
 core.HEADER = 'captured\tkey\tpacket\tsize\thex'
@@ -12,7 +11,6 @@ core.SPECS = {
     {key = 'zones',        id = 0x008, label = 'zones visited (claimed)'},
     {key = 'monstrosity-a', id = 0x063, order = 3, label = 'monstrosity levels and instincts (claimed)'},
     {key = 'monstrosity-b', id = 0x063, order = 4, label = 'monstrosity race/job instincts and variants (claimed)'},
-    {key = 'alter-ego',    id = 0x08E, label = 'Alter Ego points (claimed)'},
     {key = 'mmm',          id = 0x0AD, label = 'Moblin Maze Mongers vouchers and runes (claimed)'},
     {key = 'crafts',       id = 0x062, label = 'crafting skill levels (claimed)'},
     {key = 'title',        id = 0x061, label = 'player info and current title (claimed)'},

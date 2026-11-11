@@ -1,4 +1,4 @@
---buffbox coalition: reads what an Adoulin Civil Registrar says about its coalition (IDEAS #50). Pure.
+--buffbox coalition: reads what an Adoulin Civil Registrar says about its coalition. Pure.
 --
 -- The game says which Ionis effects you have only when you ask a coalition's Civil Registrar. The
 -- dialogue (ffxilogger, one character, 2026-09-27 10:56-10:59, all six coalitions) runs:

@@ -94,10 +94,15 @@ try {
         if (-not $Unattended) { $ask = Read-Host "Load Checkup every time you start the game? This adds the line '$line' to scripts\init.txt [Y/n]" }
         if ($ask -notmatch '^[nN]') {
             if (-not (Test-Path -LiteralPath $scripts)) { New-Item -ItemType Directory -Path $scripts | Out-Null }
-            $text = ''
-            if (Test-Path -LiteralPath $init) { $text = [System.IO.File]::ReadAllText($init); if ($text.Length -gt 0 -and -not $text.EndsWith("`n")) { $text += "`r`n" } }
-            [System.IO.File]::WriteAllText($init, $text + $line + "`r`n", (New-Object System.Text.ASCIIEncoding))
-            Say "Added '$line' to $init" 'Green'
+            [byte[]]$bytes = @()
+            if (Test-Path -LiteralPath $init) {
+                Copy-Item -LiteralPath $init -Destination ($init + '.bak') -Force
+                $bytes = [System.IO.File]::ReadAllBytes($init)
+                if ($bytes.Length -gt 0 -and $bytes[$bytes.Length - 1] -ne 10) { $bytes += [System.Text.Encoding]::ASCII.GetBytes("`r`n") }
+            }
+            $bytes += [System.Text.Encoding]::ASCII.GetBytes($line + "`r`n")
+            [System.IO.File]::WriteAllBytes($init, $bytes)
+            Say "Added '$line' to $init (the old file is saved next to it as init.txt.bak)" 'Green'
         } else {
             Say "Skipped. Add the line '$line' to $init yourself if you want Checkup to load at game start." 'Yellow'
         }

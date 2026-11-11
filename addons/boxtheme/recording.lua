@@ -1,15 +1,15 @@
 --recording: the one master switch for every evidence recorder (idea: first-run onboarding, 2026-10-17).
 --
--- One small file holds the answer, so //rec on|off flips ffxilogger, pricelog and Harness together
+-- One small file holds the answer, so //rec on|off flips every recorder together
 -- (and any recorder that adopts it later) without a reload:
 --   <Windower>/addons/boxtheme/data/recording.cfg      (data/ is never touched by deploy.ps1)
 --   all=off                    master: on or off
---   harness=on                 optional per-recorder override; it wins over "all"
+--   combatlog=on               optional per-recorder override; it wins over "all"
 -- Missing or unreadable settings leave recording off.
 --
 -- A recorder asks:   package.path = (windower.windower_path or '') .. 'addons/boxtheme/?.lua;' .. package.path
 --                    local recording = require('recording')
---                    if recording.enabled('ffxilogger') then ... end
+--                    if recording.enabled('combatlog') then ... end
 -- enabled() re-reads the file at most every 10 seconds, so it is cheap to call per event.
 -- Pure Lua, no FFI, no game memory. Read failures fall back to off.
 local M = {}
@@ -93,7 +93,7 @@ function M.set(name, on)
 end
 
 -- Lines for //rec status. recorders is a list of names (default: the known evidence recorders).
-M.RECORDERS = {'ffxilogger', 'pricelog', 'harness', 'combatlog'}
+M.RECORDERS = {'combatlog'}
 function M.status(recorders)
     refresh(true)
     local out = {'recording ' .. (cache.all and 'ON' or 'OFF') .. ' (master)'}

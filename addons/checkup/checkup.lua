@@ -1,18 +1,18 @@
 --checkup: one command that says which facts the addons hold are missing or old, and which recorders
---have stopped writing (IDEAS #51 setup checklist, #43 addon health). READ-ONLY: it reads the files
+--have stopped writing. READ-ONLY: it reads the files
 --the other addons write in the Windower addons folder and nothing else; nothing is ever sent.
 --The one thing it writes is the master recording switch, boxtheme/data/recording.cfg (//rec on|off).
 --
 --  setup      facts only an NPC or a menu tells you (Ionis coalitions, merits and job points,
 --             currencies, REMA weapons), with how old each one is and what to do when it is stale
---  recorders  whether ffxilogger, combatlog and ffxibazaar have written a file today
+--  recorders  whether combatlog has written a file today
 --  addons     the version installed, and any ERROR in an addon's log in the last 7 days
 --
 --On login it prints only what needs doing. What it cannot see: whether an addon is loaded right now
 --(a recorder with no file today may just have had nothing to record).
 _addon.name = 'checkup'
 _addon.author = 'ImpactLogic'
-_addon.version = '0.5.10'   -- bump on every change that reaches the game
+_addon.version = '0.5.11'   -- bump on every change that reaches the game
 _addon.commands = {'checkup', 'ck', 'rec', 'setup'}
 
 config = require('config')
@@ -41,7 +41,7 @@ local defaults = {
            bg = {alpha = 170}, flags = {draggable = true}},
 }
 local settings = config.load(defaults)
--- Themed background from addons/boxtheme (idea #57), created before the box so the text draws on top.
+-- Themed background from addons/boxtheme, created before the box so the text draws on top.
 -- Optional: without boxtheme the box keeps its own flat background.
 package.path = (windower.windower_path or '') .. 'addons/boxtheme/?.lua;' .. package.path
 local panel_ok, panel = pcall(function() return require('boxpanel').new('checkup') end)

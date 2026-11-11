@@ -1,11 +1,11 @@
 --storyguide: a step-by-step box for missions (and the quests that ride along with them). READ-ONLY: it reads packets and sends nothing.
--- Tracks (storylines in wiki order) are generated offline by tools/build-storyguide.py into tracks/; the box shows the current mission, its parts and steps
+-- Tracks (storylines) come from skeleton/ (names and order from the game client); the box shows the current mission, its parts and steps
 -- as a checklist, what the mission requires, and what comes next. Position comes from a mission you confirm (//sg at) tied to the game's own value, or
 -- from an ordinal rule where the value is the mission position. Steps tick themselves when a key item they name appears; the rest you tick with //sg done.
 
 _addon.name = 'storyguide'
 _addon.author = 'ImpactLogic'
-_addon.version = '0.18.1'   -- bump on every change that reaches the game
+_addon.version = '0.18.2'   -- bump on every change that reaches the game
 _addon.commands = {'storyguide', 'sg'}
 
 config = require('config')
@@ -741,7 +741,7 @@ windower.register_event('addon command', guarded('command', function(cmd, ...)
         local choice = (...)
         if choice == 'on' or choice == 'off' then settings.gather = choice == 'on' else settings.gather = not settings.gather end
         config.save(settings); state.dirty = true
-        msg('GATHER counters ' .. (settings.gather and 'on (bag counts and auto ticks on gather steps)' or 'off (steps show the wiki text only, nothing ticks from the bag)'))
+        msg('GATHER counters ' .. (settings.gather and 'on (bag counts and auto ticks on gather steps)' or 'off (steps show the plain step text only, nothing ticks from the bag)'))
     elseif cmd == 'replay' then
         replay_evidence(false)
     elseif cmd == 'details' then

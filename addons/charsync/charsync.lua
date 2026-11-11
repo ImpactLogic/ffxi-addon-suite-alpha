@@ -1,5 +1,5 @@
 --charsync: one whole snapshot of a character (every bag's items with augments, gil, jobs, what is
---equipped, key items) for the ffxi-atlas character page (IDEAS #60). READ-ONLY: it reads what the
+--equipped, key items) for the character page. READ-ONLY: it reads what the
 --client already holds; nothing is ever sent.
 --
 -- 0.3.13: also records packets that arrive on their own at login or zoning (visited zones, monstrosity, Alter Ego
@@ -13,11 +13,11 @@
 -- 0.3.1: a bag read as empty while a worn piece sits in it is written as unreadable (zone-time snapshots had
 -- empty wardrobes); progress pages no longer count as changed when only the packet header's sequence differs.
 --
--- 0.3.0 (IDEAS #76): also records the client's quest / mission log packets (0x056) raw into progress.tsv, so
+-- 0.3.0: also records the client's quest / mission log packets (0x056) raw into progress.tsv, so
 -- ffxi-atlas can learn how they map (docs/PROGRESS-LOG.md). Nothing is decoded here and nothing is sent;
 -- open the Quest and Mission menus to make the client send the pages.
 --
--- 0.2.0 (IDEAS #74 step 1): also writes what the points and rema addons used to, from the same bag reads:
+-- 0.2.0: also writes what the points and rema addons used to, from the same bag reads:
 -- points.tsv (merits, job points), rema.tsv (REMA weapons held) and currencies.tsv (the Currencies menu,
 -- from 0x113 / 0x118). Those two addons are retired; their cores (pointscore, remacore) and the generated
 -- rema_weapons.lua moved here. Each extra runs on its own under pcall, so one failing never stops the
@@ -30,12 +30,12 @@
 -- ffxi-atlas `store.pack pull` copies snapshot.tsv into the character pack.
 _addon.name = 'charsync'
 _addon.author = 'ImpactLogic'
-_addon.version = '0.3.25'   -- bump on every change that reaches the game
+_addon.version = '0.3.26'   -- bump on every change that reaches the game
 _addon.commands = {'charsync', 'cs'}
 
 config = require('config')
 package.path = (windower.windower_path or '') .. 'addons/boxtheme/?.lua;' .. package.path
-pcall(function() require('heapstat').start() end)   -- one Lua-heap row per 10 min in data/heap.csv (idea #219)
+pcall(function() require('heapstat').start() end)   -- one Lua-heap row per 10 min in data/heap.csv
 packets = require('packets')
 extdata = require('extdata')
 res = require('resources')
@@ -60,8 +60,8 @@ local WEAPONS = require('rema_weapons')
 
 local defaults = {
     log_max_kb = 256,
-    temprix_capture = true, -- passive menu/dialogue evidence; no actions or decoding
-    sortie_capture = true, -- separate client-view temporary evidence on normal sync
+    temprix_capture = false, -- OFF by default: it saves nearby chat text for two minutes after a Temprix menu
+    sortie_capture = false, -- OFF by default: separate Sortie client-view capture, //cs sortie on to enable
     spell_capture = true, -- passive learned API flags; not castability/removal proof
     keep_days = 60,
     -- Currency fields named by //charsync rema: case-insensitive substrings of the names packets.parse gives
@@ -400,7 +400,7 @@ local function read_totals(data)
     end
 end
 
--- progress.tsv: the newest raw copy of each quest / mission log page (IDEAS #76). Pages from earlier sessions
+-- progress.tsv: the newest raw copy of each quest / mission log page. Pages from earlier sessions
 -- are loaded first so opening one menu does not drop the rest; every change is also appended to
 -- progress-history.tsv, so completions show up as diffs between two copies of one page.
 local function record_progress(id, data)

@@ -1,4 +1,4 @@
---heapstat: one line every 10 minutes with this addon's own Lua heap, so a Lua leak can be told apart from native growth (idea #219).
+--heapstat: one line every 10 minutes with this addon's own Lua heap, so a Lua leak can be told apart from native growth.
 --
 --   package.path = (windower.windower_path or '') .. 'addons/boxtheme/?.lua;' .. package.path
 --   pcall(function() require('heapstat').start() end)
@@ -7,7 +7,7 @@
 --   time,char,raw_kb,live_kb,reason
 -- raw_kb is the heap as it is (garbage included); live_kb is measured right after a full collection, so it is what the addon
 -- really holds. A live_kb that keeps climbing across hours is a leak in that addon; a flat live_kb with a climbing client
--- (see PadRelay's ALIVE line, or //memwatch) points at native memory instead. tools/heap-report.py reads every addon's file.
+-- points at native memory instead.
 -- Pure Lua: no FFI, no game memory, and nothing touches the game for the first minute after load.
 local M = {}
 

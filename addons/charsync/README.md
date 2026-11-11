@@ -2,7 +2,7 @@
 
 ## Sortie temporary state (0.3.7)
 
-Capture defaults on alongside ordinary sync; `//cs sortie on|off` sets it.
+Sortie capture is OFF by default; `//cs sortie on` turns it on.
 `sortie-temporary.tsv` is a separate latest client-view capture, and
 `sortie-temporary-history.tsv` preserves earlier frames. All33 allowlisted
 items retain persistent-traversal versus consumable classifications. Outside
@@ -13,14 +13,14 @@ consumption causes. Capture is read-only. Atlas pack/UI import is pending.
 After deployment, reload with `//lua r charsync`; offline checks do not verify
 the game's temporary-bag API behavior.
 
-**Read-only.** One whole snapshot of a character for the ffxi-atlas character page:
+**Read-only.** One whole snapshot of a character for the character page:
 every item in every bag with its augments, gil, job levels, what is equipped, and key items.
 It reads what the client already holds; nothing is ever sent.
 
 ```
 //charsync            write a snapshot now and say what it held (also: //cs)
 //charsync roe        RoE observation dates and completion-page coverage
-//charsync passive    which login/zoning packets have arrived (zones, monstrosity, Alter Ego, MMM, crafts, title)
+//charsync passive    which login/zoning packets have arrived (zones, monstrosity, MMM, crafts, title)
 //charsync warps      how many home points, survival guides and waypoints the client says are set
 //charsync warps have|missing [home|guides|waypoints]   which ones, by place name
 //charsync status     all saved capture dates and refresh instructions
@@ -29,7 +29,7 @@ It reads what the client already holds; nothing is ever sent.
 //charsync points     merits and job points summary (and rewrites points.tsv)
 //charsync rema       REMA weapons held, watched currencies, Aftermath level
 //charsync progress   quest / mission log pages recorded so far (0.3.0)
-//charsync sortie [on|off] separate Sortie temporary-state capture setting (default on)
+//charsync sortie [on|off] separate Sortie temporary-state capture setting (default off)
 //charsync box [on|off]   the repo-wide display switch; charsync has no display yet
 //charsync version
 ```
@@ -115,15 +115,15 @@ Local incoming 0x01B Job Info supplies the unsigned-byte Mastery Rank at zero-ba
 
 Incoming 0x063 with order 6 (byte 5) carries 128-bit masks for home points (zero-based 0x08), survival guides (0x18) and waypoints (0x28). It arrives around login and zoning and when a home point or survival guide menu opens, so no click is needed. Charsync keeps the newest whole packet in `warps.tsv` (same raw shape as `mastery.tsv`) and appends a line to size-capped `warps-history.tsv` only when a mask changes; the header's sequence number and bytes after 0x38 (telepoints, maws, eschan portals: not checked) do not count as changes. `//cs warps` prints the counts.
 
-`warps.tsv` holds the raw packet (bit numbers). Names come from `warpnames.lua`, generated from the XIchecklist warp map by `tools/build-warp-names.py`; `//cs warps have|missing` lists them. Three clicks agree with it (on one character bits 9, 10 and 99 are the three Bastok Mines home points and guide bit 25 is Bastok Mines; on another a click at bit 43 is Selbina HP#1, and on a third bit 5 is Northern San d'Oria HP#3), but most names are still unchecked in play, and names listed as missing are only those the map knows. Layout and evidence: `docs/warp-bitmask-evidence.md`. Reload `//lua r charsync`, then zone once and run `//cs warps`.
+`warps.tsv` holds the raw packet (bit numbers). This package ships no place-name table, so `//cs warps have|missing` lists the bit numbers ("bit 9"). Names will be added once they are confirmed from our own captures.
 
 ## Passive captures (0.3.13)
 
-Packets the client sends by itself at login or zoning are kept raw in `passive.tsv` (newest copy of each, header sequence number ignored; a change appends to size-capped `passive-history.tsv`): 0x008 visited zones, 0x063 orders 3 and 4 monstrosity, 0x08E Alter Ego points, 0x0AD Moblin Maze Mongers, 0x062 crafting skills, 0x061 player info and title. The player does nothing; `//cs passive` lists which have arrived, so a setup screen can show "captured" without asking for a click. The packet list comes from the XIchecklist add-on's handlers, and each of these arrived in our Harness captures on every zone-in (3 characters, 2026-10-17). What each one means is that add-on's claim, not decoded or verified here.
+Packets the client sends by itself at login or zoning are kept raw in `passive.tsv` (newest copy of each, header sequence number ignored; a change appends to size-capped `passive-history.tsv`): 0x008 visited zones, 0x063 orders 3 and 4 monstrosity, 0x0AD Moblin Maze Mongers, 0x062 crafting skills, 0x061 player info and title. The player does nothing; `//cs passive` lists which have arrived, so a setup screen can show "captured" without asking for a click. The packet list comes from the XIchecklist add-on's handlers, and each of these arrived in our Harness captures on every zone-in (3 characters, 2026-10-17). What each one means is that add-on's claim, not decoded or verified here.
 
 ## Temprix progress capture (0.3.6)
 
-Passive recording is on by default. Speak to Temprix and check your Aeonic progress normally; raw menu/dialogue evidence goes to `data/<Character>/temprix.tsv`. `//cs temprix` shows status; `//cs temprix off` / `on` save the preference. Sessions last up to two minutes; contextual text can include nearby chat. Nothing is sent or blocked. After deployment, reload with `//lua r charsync`. See `docs/temprix-recorder.md` in the source repo.
+Passive recording is OFF by default; turn it on with `//cs temprix on`. Once on, speak to Temprix and check your Aeonic progress normally; raw menu/dialogue evidence goes to `data/<Character>/temprix.tsv`. `//cs temprix` shows status; `//cs temprix off` / `on` save the preference. Sessions last up to two minutes; contextual text can include nearby chat. Nothing is sent or blocked. After deployment, reload with `//lua r charsync`. See `docs/temprix-recorder.md` in the source repo.
 
 ## Temprix Geas Fete progress (0.3.14)
 

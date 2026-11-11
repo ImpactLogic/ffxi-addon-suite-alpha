@@ -1,6 +1,6 @@
-# boxtheme 0.4.0
+# boxtheme 0.5.8
 
-Themed backgrounds for every box our addons draw (idea #57): the eight in-game Window Types, plus a
+Themed backgrounds for every box our addons draw: the eight in-game Window Types, plus a
 Vana'diel menu look, a compact HUD, black and smoked glass. **Read-only in game.** It stores themes, locks, screen placement and recording preferences in its local `data/` folder. Load with `//lua l boxtheme` when you want to change a theme; the boxes do not need it
 loaded to draw their background.
 
@@ -22,7 +22,7 @@ Typography sets font and size on text boxes. `inherit` keeps each addon's own se
 
 **Drag handle (0.2.3).** The whole title strip drags the box (the text library only drags from over the text), with a small grip (2 x 3 dots) left of the padlock while unlocked; a locked box shows no grip and does not drag. The position is saved when the drag ends: addons pass their settings table as `panel:attach(box, settings)`.
 
-**Lock and close (0.2.0, idea #65).** Every themed box has a small padlock at the right of its title bar. Click it to
+**Lock and close (0.2.0).** Every themed box has a small padlock at the right of its title bar. Click it to
 lock the box (gold = locked, grey = unlocked): a locked box cannot be dragged. Boxes whose addon passes `close_cmd`
 (`bags`, `timers`) also get a small square at the left that runs the addon's `box off`. Lock state is kept in
 `data/locks.txt`, so it is one setting for the whole suite. **0.2.1:** the icons are smooth 14 px PNGs (one image per state, so
@@ -62,10 +62,8 @@ handle. The title bar sits `P.TITLE_H` (18 px) above the content. Create the pan
 ## recording.lua: the master recording switch
 
 Not a theme: a tiny shared library every evidence recorder asks "may I write?". The answer lives in
-`data/recording.cfg` (`all=on|off`, optional `harness=on` style overrides). **Missing file = on**, so existing
-installs keep recording; the public package ships `all=off`. Flip it with `//rec on|off|status [recorder]`
-(command lives in checkup). ffxilogger and pricelog follow within 10 seconds; Harness reads it at load
-(`//lua r harness` after a change). Offline test: `luajit tools/test-recording.lua`.
+`data/recording.cfg` (`all=on|off`, optional `combatlog=on` style overrides). **Missing file = off**, and the public package ships `all=off`. Flip it with `//rec on|off|status [recorder]`
+(command lives in checkup). Combatlog follows within 10 seconds. Offline test: `luajit tools/test-recording.lua`.
 
 ## Text dedupe (0.5.3)
 

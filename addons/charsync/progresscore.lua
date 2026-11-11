@@ -1,4 +1,4 @@
---progresscore: the recorder half of the quest and mission tracker (IDEAS #76), with no Windower in it so
+--progresscore: the recorder half of the quest and mission tracker, with no Windower in it so
 -- tools/test-progress.lua can run it offline.
 --
 -- What it does: keeps the newest raw copy of each quest / mission log packet the client sends, per
