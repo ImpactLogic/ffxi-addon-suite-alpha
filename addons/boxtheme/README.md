@@ -72,3 +72,7 @@ the same box, so boxes that refresh every tick stop redrawing unchanged text (28
 Strings with `${...}` variables and any `clear` or `append` in between are never skipped. Each addon picks it up on its
 next reload (`//lua r <addon>`). If a box ever stops updating, `//lua u boxtheme` does not undo it; reload that addon
 after reverting `P.dedupe_text` in `boxpanel.lua`. Offline-tested with a stub library only (`tools/test-boxtheme.lua`).
+
+## heapstat.lua: memory samples
+
+Every box add-on (and Charsync) loads this small library, which appends one line to its own `data/heap.csv` about every 10 minutes and on a zone change: `time,char,raw_kb,live_kb,reason`. `raw_kb` is the Lua heap as it is, `live_kb` is measured after a full garbage collection. It is only for spotting leaks, never leaves your computer, and rotates at about 200 KB into `heap.old.csv`. It contains your character name.

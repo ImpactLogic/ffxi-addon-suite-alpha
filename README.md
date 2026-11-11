@@ -43,6 +43,8 @@ To update, run the installer from the new ZIP (it keeps your data folders), then
 
 Each add-on's own README has the full command list and file list. Every one also writes `data/<addon>.log` and, where Windower's settings library is used, a `data/settings.xml`, inside its own folder.
 
+**Memory sample file:** every add-on that draws a box, plus Charsync, also writes `data/heap.csv` in its own folder: one line about every 10 minutes (and one per zone change) with the time, your character name, and how much Lua memory that add-on is using (`time,char,raw_kb,live_kb,reason`). It exists to spot memory leaks, stays on your computer, is never sent anywhere, and is capped at about 200 KB (then it rotates to `heap.old.csv`). It contains no game data other than your character name. Delete it any time; it comes back on the next load.
+
 | Add-on | What it does | Main commands | What it writes (in `Windower4/addons/<name>/data/`) | Status |
 |---|---|---|---|---|
 | **boxtheme** | Themed backgrounds, locks and accents for every box the other add-ons draw; also the `//rec` master switch for recorders | `//boxtheme`, `//boxtheme <addon> <theme>`, `//rec on\|off\|status` | `themes.txt`, `locks.txt`, `screens.txt`, `recording.cfg` | not confirmed |
