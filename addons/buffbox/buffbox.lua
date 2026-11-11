@@ -42,7 +42,7 @@ local defaults = {
            bg = {alpha = 170}, flags = {draggable = true}},
 }
 local settings = config.load(defaults)
--- Themed background from addons/boxtheme (idea #57), created before the box so the text draws on top.
+-- Themed background from addons/boxtheme, created before the box so the text draws on top.
 -- Optional: without boxtheme the box keeps its own flat background.
 package.path = (windower.windower_path or '') .. 'addons/boxtheme/?.lua;' .. package.path
 local panel_ok, panel = pcall(function() return require('boxpanel').new('buffbox', {bars = true}) end)
@@ -103,7 +103,7 @@ local function char_file(name)
 end
 local function food_path() return char_file('food.txt') end
 
--- data/<Character>/coalitions.tsv: what each Civil Registrar last said (IDEAS #50), one row per coalition.
+-- data/<Character>/coalitions.tsv: what each Civil Registrar last said, one row per coalition.
 local function load_coalitions()
     local list, path = {}, char_file('coalitions.tsv')
     local f = path and io.open(path, 'r')
@@ -163,7 +163,7 @@ local function history(sign, id, detail)
     f:close()
 end
 
--- data/<Character>/stats.log (idea #55): 0x061 stat changes with the buff gains, losses and songs around
+-- data/<Character>/stats.log: 0x061 stat changes with the buff gains, losses and songs around
 -- them, one file so the timing lines up. Kept apart from buffbox.log, which is small and starts over when
 -- full. Over 1 MiB it moves to stats.old.log.
 local function stat_log(text)
@@ -249,7 +249,7 @@ end
 -------------------------------------------------------------------------------
 -- Events
 -------------------------------------------------------------------------------
--- Idea #55: each 0x061 (your stats) as a diff against the last one, logged to stats.log, and kept as a
+-- each 0x061 (your stats) as a diff against the last one, logged to stats.log, and kept as a
 -- pending change the box can put on a buff once the 3 s around it are known (core.resolve_measure).
 local function on_stats(data)
     local cur = core.parse_stats(data)
@@ -322,7 +322,7 @@ windower.register_event('incoming chunk', guarded('incoming chunk', function(id,
     if not rows then return end
     current_char()
     state.timers = rows
-    -- Slot order (idea #56): the buffs in the order the server keeps them, logged when it changes.
+    -- Slot order: the buffs in the order the server keeps them, logged when it changes.
     local ids = {}
     for _, r in ipairs(rows) do ids[#ids + 1] = r.id end
     local order = table.concat(ids, ' ')

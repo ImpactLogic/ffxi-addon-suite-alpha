@@ -1,4 +1,4 @@
---boxpanel: themed backgrounds drawn behind an addon's text box (idea #57). Shared by every addon here.
+--boxpanel: themed backgrounds drawn behind an addon's text box. Shared by every addon here.
 --
 --   package.path = windower.windower_path .. 'addons/boxtheme/?.lua;' .. package.path
 --   local ok, boxpanel = pcall(require, 'boxpanel')
@@ -13,7 +13,7 @@
 -- Pure parts (themes, config, geometry) need no Windower, so tools/test-boxtheme.lua can run them.
 local P = {}
 
--- IDEAS #219: every box addon pushed its text to the game on every tick, changed or not (28 call sites). The text
+-- every box addon pushed its text to the game on every tick, changed or not (28 call sites). The text
 -- library's text(t, str) rebuilds the text and redraws it each time, so this skips a call whose string equals the
 -- last one given to the same object. Done once here, on the library table (instances reach text() through the
 -- table, so assigning a field on a box would hit the library's __newindex and break it). Strings with ${...}
@@ -225,7 +225,7 @@ function P.title_extra(text, w)
 end
 
 -------------------------------------------------------------------------------
--- Title bar controls (idea #65): a padlock at the right of the title strip, and an optional close box at the left.
+-- Title bar controls: a padlock at the right of the title strip, and an optional close box at the left.
 -- Lock state lives in themes.txt's sibling locks.txt ("all locked", "<addon> locked|unlocked"), not in each addon.
 -------------------------------------------------------------------------------
 P.ICON = 14   -- shown size of the 16x16 icon art (art/lock_on.png, lock_off.png, close.png)
@@ -536,7 +536,7 @@ function P.new(addon, opts)
     for i = 1, POOL do self.prims[i] = prim() self.prims[i]:hide() end
     if opts and opts.bars then for i = 1, BAR_POOL do self.bars[i] = prim() self.bars[i]:hide() end end
     for i = 1, ICON_POOL do self.icons[i] = prim() self.icons[i]:hide() end
-    pcall(function() require('heapstat').start() end)   -- every box addon reports its Lua heap (data/heap.csv, idea #219)
+    pcall(function() require('heapstat').start() end)   -- every box addon reports its Lua heap (data/heap.csv)
     return self
 end
 

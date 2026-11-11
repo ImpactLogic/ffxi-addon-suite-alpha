@@ -1,5 +1,5 @@
 -- uiscale: the one place that knows the screen's scale. Pure Lua (no Windower calls except through M.read), so it is tested offline
--- (tools/test-uiscale.lua). Idea #81.
+-- (tools/test-uiscale.lua).
 --
 -- Vocabulary. The window is x_res by y_res real pixels. Windower divides it by the profile's `uiscale` to get the UI size
 -- (ui_x_res by ui_y_res); every text and image object is positioned and sized in UI pixels and then drawn scaled up by that ratio. So

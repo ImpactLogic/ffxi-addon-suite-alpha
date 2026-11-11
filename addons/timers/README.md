@@ -1,4 +1,4 @@
-# timers 0.1.3
+# timers 0.1.5
 
 Ability and spell recasts as a themed box with a time bar under each row. **Read-only**: it asks Windower
 for recasts and sends nothing. Replaces the closed-source `Timers.dll` plugin for recasts; buff timers stay in

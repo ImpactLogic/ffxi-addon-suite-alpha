@@ -43,6 +43,8 @@ To update, run the installer from the new ZIP (it keeps your data folders), then
 
 Each add-on's own README has the full command list and file list. Every one also writes `data/<addon>.log` and, where Windower's settings library is used, a `data/settings.xml`, inside its own folder.
 
+**Memory sample file:** every add-on that draws a box, plus Charsync, also writes `data/heap.csv` in its own folder: one line about every 10 minutes (and one per zone change) with the time, your character name, and how much Lua memory that add-on is using (`time,char,raw_kb,live_kb,reason`). It exists to spot memory leaks, stays on your computer, is never sent anywhere, and is capped at about 200 KB (then it rotates to `heap.old.csv`). It contains no game data other than your character name. Delete it any time; it comes back on the next load.
+
 | Add-on | What it does | Main commands | What it writes (in `Windower4/addons/<name>/data/`) | Status |
 |---|---|---|---|---|
 | **boxtheme** | Themed backgrounds, locks and accents for every box the other add-ons draw; also the `//rec` master switch for recorders | `//boxtheme`, `//boxtheme <addon> <theme>`, `//rec on\|off\|status` | `themes.txt`, `locks.txt`, `screens.txt`, `recording.cfg` | not confirmed |
@@ -61,13 +63,13 @@ The add-on READMEs sometimes mention `tools/...` test scripts and the author's r
 
 ## Story Guide: a tracker, no walkthrough text
 
-Story Guide in this package lists every mission and quest of 23 storylines by name and in order (`skeleton/`), tracks where you are and what you have ticked, and says "No step text for this mission yet" where nothing has been written. It does not include a walkthrough: no text copied from any website ships, and no data pack is published. Short step lines in our own words, written from play, go in `addons/storyguide/own/` (see the README there) and appear over the list as they are added. Reading your position straight from the game needs id tables built from XIchecklist, whose author's licence is being confirmed, so until then you confirm where you are with `//sg at <mission>`.
+Story Guide in this package lists every mission and quest of 23 storylines by name and in order (`skeleton/`), tracks where you are and what you have ticked, and says "No step text for this mission yet" where nothing has been written. It does not include a walkthrough: no walkthrough or other website text ships, and no data pack is published. Mission and quest names and their order come from the game's own title list; the groupings and ids ("Bastok Mission 1-1") are this project's own labels. Short step lines in our own words, written from play, go in `addons/storyguide/own/` (see the README there) and appear over the list as they are added. Reading your position straight from the game needs id tables that are not shipped yet, so for now you confirm where you are with `//sg at <mission>`.
 
 <!-- recommended-addons:start -->
 
 ## Recommended and required add-ons
 
-None of these add-ons is included in this package: each is another author's work (or our changed copy of it), so it is linked here to the original. Credits and licences are in `THIRD-PARTY-NOTICES.md`. **Required** means a suite add-on needs it to work; **recommended** means a suite feature loads or pairs with it; **optional** means nothing in the suite refers to it.
+None of these add-ons is included in this package (apart from one value table, see `THIRD-PARTY-NOTICES.md`): each is another author's work (or our changed copy of it), so it is linked here to the original. Credits and licences are in `THIRD-PARTY-NOTICES.md`. **Required** means a suite add-on needs it to work; **recommended** means a suite feature loads or pairs with it; **optional** means nothing in the suite refers to it.
 
 | Add-on | Original author | Link | Licence | Use in the suite | Our changes |
 |---|---|---|---|---|---|
@@ -106,7 +108,7 @@ None of these add-ons is included in this package: each is another author's work
 
 ## Credits and licence
 
-- The code and documents of this package are MIT licensed, copyright 2026 ImpactLogic: see [LICENSE](LICENSE). Credits are in [CREDITS.md](CREDITS.md), and other people's add-ons that this project changed are listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+- The code and documents of this package are MIT licensed, copyright 2026 ImpactLogic: see [LICENSE](LICENSE). Credits are in [CREDITS.md](CREDITS.md), and the little third-party material inside this package is listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 - Everything runs on Windower 4 and its libraries and resource tables.
 - Written by ImpactLogic, with help from Claude (Anthropic) as a coding assistant.
 - Final Fantasy XI is a registered trademark and copyright of Square Enix. This project is not affiliated with or endorsed by Square Enix, Windower or BG Wiki.

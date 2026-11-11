@@ -1,9 +1,9 @@
 -- Warp unlock bitmasks from incoming 0x063 order 6 (byte 5 of the packet). Event driven: it arrives around
 -- login / zoning and when a home point or survival guide menu opens, so no menu has to be clicked.
--- Layout confirmed on 3 characters in Harness captures 2026-10-17 (one character 3 home point bits, another 95,
+-- Layout confirmed on 3 characters in packet captures (one character 3 home point bits, another 95,
 -- a third 120): zero-based 0x08..0x17 home points, 0x18..0x27 survival guides, 0x28..0x37 waypoints, each
 -- 128 bits little-endian. Bit numbers only; which bit is which place is NOT known here (atlas maps them).
--- Place names come from warpnames.lua (generated from the XIchecklist map by tools/build-warp-names.py).
+-- Place names would come from an optional warpnames.lua; none ships, so bits are listed as 'bit N'.
 -- Fields after 0x38 (telepoints, maws, eschan portals) are kept in the raw hex but not decoded: not checked.
 local raw = require('progresscore')
 local core = {}

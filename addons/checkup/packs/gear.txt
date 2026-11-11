@@ -1,7 +1,6 @@
-# Gear and character (launch): the owned-gear and character snapshot that Gear Lab and the character page read.
+# Gear and character: a local snapshot of your character.
 name: Gear and character
-desc: Your character's gear, points and bag space, kept current for Gear Lab and the character page
+desc: Your character's gear, points and bag space, saved to local files
 status: launch
-atlas: gear-lab
 part: charsync cmd=cs
 part: bags box

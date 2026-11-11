@@ -1,4 +1,4 @@
---combatlog: READ-ONLY recorder of your own combat actions, for gear and stat analysis (IDEAS #22).
+--combatlog: READ-ONLY recorder of your own combat actions, for gear and stat analysis.
 --
 --It records and nothing else: no automation, no conclusions. Rows are
 --mechanical facts (message ids and amounts); attribution and analysis happen at ingest in
@@ -76,7 +76,7 @@ local defaults = {
            bg = {alpha = 170}, flags = {draggable = true}},
 }
 local settings = config.load(defaults)
--- Themed background from addons/boxtheme (idea #57), created before the box so the text draws on top.
+-- Themed background from addons/boxtheme, created before the box so the text draws on top.
 -- Optional: without boxtheme the box keeps its own flat background.
 package.path = (windower.windower_path or '') .. 'addons/boxtheme/?.lua;' .. package.path
 local panel_ok, panel = pcall(function() return require('boxpanel').new('combatlog') end)
@@ -101,7 +101,7 @@ local state = {
     -- settings.xml: the owner turned it off one morning to save space, and every later reload came
     -- back silently not recording -- the Ambuscade run of 2026-09-18 was lost that way. And the
     -- file is shared by both clients: a save from one rewrites the other character's section from
-    -- a stale copy (IDEAS #23), so a saved switch cannot be trusted anyway. //cbt off pauses until
+    -- a stale copy, so a saved switch cannot be trusted anyway. //cbt off pauses until
     -- the next load.
     recording = true,
     test = nil,         -- 1.0.0: the running //cbt test: {label, note}

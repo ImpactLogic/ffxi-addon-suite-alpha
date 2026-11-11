@@ -124,7 +124,7 @@ function core.warnings(rows, now, st, warn_secs, min_len)
     return fire
 end
 
--- Which group a buff goes in (idea #57 layout): food, songs, rolls, region, other.
+-- Which group a buff goes in: food, songs, rolls, region, other.
 core.GROUPS = {'food', 'songs', 'rolls', 'region', 'other'}
 core.HEADING = {food = 'FOOD', songs = 'SONGS', rolls = 'ROLLS', region = 'REGION', other = 'OTHER'}
 function core.kind(id, name, opts)
@@ -139,7 +139,7 @@ local GOLD, BLUE, AMBER, RED, DIM = {216, 184, 106}, {143, 212, 255}, {242, 184,
 local BAR = {food = {127, 191, 138, 255}, songs = {111, 134, 217, 255}, rolls = {181, 139, 224, 255},
     region = {150, 150, 150, 255}, other = {150, 160, 190, 255}, warn = {242, 184, 75, 255}}
 
--- Box text, grouped (idea #57). opts: names = {[id] = name}, food = {name, own, pet, measured} or nil,
+-- Box text, grouped. opts: names = {[id] = name}, food = {name, own, pet, measured} or nil,
 -- show_pet, char, now, details = {[id or row] = {lines}} (roll values, fixed-buff effects, region notes),
 -- songs = {[row] = {spell, from, measured}}, measured = {[id] = text} (stat changes read when a buff landed),
 -- song_ids = {[buff id] = true}, is_roll = function(name), layout = 'full' | 'compact',
@@ -265,7 +265,7 @@ end
 
 -- Incoming 0x061, your own stats (Windower libs/packets/fields.lua): Maximum HP/MP u32 at 0x04/0x08,
 -- Base STR..CHR u16 at 0x14..0x20, Added STR..CHR s16 at 0x22..0x2E, Attack u16 at 0x30, Defense u16
--- at 0x32, eight elemental resistances s16 at 0x34..0x42. Idea #55: a buff's potency may show as the
+-- at 0x32, eight elemental resistances s16 at 0x34..0x42. a buff's potency may show as the
 -- change in these when it lands. Returns {name = value} in STATS order, or nil.
 local ATTR = {'STR', 'DEX', 'VIT', 'AGI', 'INT', 'MND', 'CHR'}
 local ELEM = {'Fire', 'Ice', 'Wind', 'Earth', 'Ltng', 'Water', 'Light', 'Dark'}
@@ -329,7 +329,7 @@ function core.resolve_measure(pending, events, now)
     return false
 end
 
--- Reading a buff from a LATER stats packet (idea #55, 2026-10-01). The server resends 0x061 when you do
+-- Reading a buff from a LATER stats packet. The server resends 0x061 when you do
 -- something yourself (food, an ability, a gear change) but not when someone else's buff lands on you (stats.log,
 -- three nights: Minuet 0 of 13, Protect 0 of 6, Food 7 of 7). So the newest packet is compared with an older one
 -- and the change is given to every buff gained in between.

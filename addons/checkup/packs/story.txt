@@ -1,8 +1,7 @@
-# Setup module (see docs in plans/setup-packs-2026-10-17.md). part: <addon> [cmd=<command word>] [box]
+# Setup module. part: <addon> [cmd=<command word>] [box]
 name: Story (missions and quests)
 desc: Mission tracker plus the basics it reads from
 status: launch
-atlas: story
 part: storyguide cmd=sg box
 part: charsync cmd=cs
 part: bags box

@@ -1,4 +1,4 @@
-# buffbox 0.9.0
+# buffbox 0.10.0
 
 A box listing your buffs with time left, what your food gives, Corsair roll values, which Bard song you have
 with its potency range, and (from a cited table) what fixed buffs give, a low-time warning and a buff history. **Read-only**: it only reads packets
@@ -37,7 +37,7 @@ OTHER
  Protect                          --
 ```
 
-Layout (idea #57, designs on the "FFXI addon boxes redesign" canvas): buffs are grouped as Food, Songs, Rolls,
+Layout: buffs are grouped as Food, Songs, Rolls,
 Region, Other under gold headings; details are dimmed; what your own stats showed when the buff landed is in
 blue (`measured`). `//bb layout compact` draws one line per buff with a draining time bar under it (green
 food, blue songs, purple rolls, amber in the last minute) and only the measured lines. The background is the
@@ -75,11 +75,11 @@ Where each part comes from:
   also each stat as a range over the +song columns. Two copies of
   one buff (two Minuets) are paired by age: the newest cast goes with the copy that ends last (inferred).
   Songs that landed before buffbox loaded show only the name and time.
-- **Stat recorder (idea #55, nothing shown yet):** each incoming `0x061` (Max HP/MP, base and added
+- **Stat recorder:** each incoming `0x061` (Max HP/MP, base and added
   STR..CHR, Attack, Defense, elemental resistances; offsets from `libs/packets/fields.lua`) is written to
   `data/<Character>/stats.log` as a diff against the last one (`stats: Atk 1200>1386(+186)`, or `same`), with
   the `gain:` / `lose:` / `song:` lines around it, `slots:` (your buffs in the server's slot order, when it
-  changes; idea #56) and `zone:` lines, so a buff's change in your stats can be matched to it later.
+  changes) and `zone:` lines, so a buff's change in your stats can be matched to it later.
   Over 1 MiB it moves to `stats.old.log`. Off with `//bb capture off`.
 - **Spell tiers (0.9.0):** any spell that lands on you (category-4 action, target message 230 / 266 / 237) names
   its exact tier and caster, shown under the buff: `Protect V (Name)`. With an optional `spells_wiki.lua` table
