@@ -5,19 +5,19 @@
 - **What it records** (from the game's own action and chat packets, as the code reads them): your job, level, zone, gear, buffs, stats and TP (`c` rows); your combat actions: ability, target, message id, amount (`a` rows); combat messages such as defeats and Treasure Hunter, which can name monsters and other players (`m` rows); treasure pool drops and who won them (`pd`, `pe` rows); reward rows (`r`); and a header with the add-on version, your character name and a random contributor id. Actions aimed *at* you are recorded only after `//cbt incoming`.
 - **Where:** `Windower4/addons/combatlog/data/<Character>/combat-<date>.tsv` (one plain-text file per character per day), plus `data/combatlog.log`, `data/settings.xml` and `data/contributor.txt`.
 - **How fast it grows** (measured on one player's own folder, 2026-10-03 to 2026-10-27): 59 daily files, 57.6 MB in all. The main character's 38 days: median 0.6 MB, average 1.3 MB, biggest 11 MB (about 48,000 rows in one day). A day's file stops at 20 MB (`data_max_mb`). **Nothing deletes old files.**
-- **Off by default.** Type **`//rec on combatlog`** to enable combat recording and **`//rec off combatlog`** to stop it. Changes are picked up within 10 seconds. Missing settings or a missing shared recording module leave combat recording off. `//cbt off` pauses it for the current session, and `//cbt on` resumes it if the shared switch allows it.
+- **Off by default.** `//rec` is a Checkup command, so load both first (`//lua l checkup`, `//lua l combatlog`). Then type **`//rec on combatlog`** to enable combat recording and **`//rec off combatlog`** to stop it. Changes are picked up within 10 seconds. Missing settings or a missing shared recording module leave combat recording off. `//cbt off` pauses it for the current session, and `//cbt on` resumes it if the shared switch allows it.
 - **To delete your records:** `//lua u combatlog`, then delete the files in `combatlog/data/<Character>/` (or the whole `combatlog/data` folder). They are plain text and nothing else depends on them.
 - **Nothing is uploaded.** The add-on contains no network code; the files stay on your computer, and sharing them is up to you.
 
 ## Other things to know before you rely on it
 
-- **The master-switch hook is new in 1.4.0 and has only been tested offline** (`tools/test-recording.lua` and the source checks in it, 16 checks). It has not been run in the game yet. Evidence: `registry/addons.tsv` has no last-seen-in-game date for combatlog.
+- **The master-switch hook is new in 1.4.0 and has only been tested offline** (16 offline checks). It has not been run in the game yet.
 - **After you update the files, reload it:** `//lua r combatlog`. `//rec on|off` itself needs no reload (the switch file is re-read every 10 seconds).
 - **Memory:** about 20 MB of Lua memory per game client once loaded, flat across 12 days of samples (`data/heap.csv`: 19.69 to 19.72 MB for the main character, 2026-10-17 to 2026-10-28; peak 20.03 MB). No growth was seen; the cause of the 20 MB was not investigated.
-- **Two clients share one `data/settings.xml`:** a save from one client can rewrite the other character's section from a stale copy (IDEAS #23). Recording on/off is therefore never saved there.
+- **Two clients share one `data/settings.xml`:** a save from one client can rewrite the other character's section from a stale copy. Recording on/off is therefore never saved there.
 
 **Read-only** recorder of your own combat actions, so gear questions can be answered with
-measurements instead of theorycraft. See IDEAS.md #22.
+measurements instead of theorycraft.
 
 It records, and shows you how you are fighting. No automation, no advice; the box is a live
 readout (below) plus a warning when an expected buff (e.g. Signet) is missing while you fight.
@@ -301,11 +301,11 @@ Nothing here is written from memory, per AGENTS.md:
 `//cbt summary` reports hit rate as a Wilson 95% interval, e.g. `80.0% (95% CI 72.2-86.0, n=125)`.
 This is deliberate. 8 hits out of 10 and 800 out of 1000 are the same rate and completely different
 evidence, and a gear change made on the first is a change made on noise. Any UI built on this data
-should keep showing n. IDEAS #22 has the sample-size discussion.
+should keep showing n.
 
 ## Why run it with Trust
 
-Trust (IDEAS #5) repeats the same rotation on the same mobs for hours. That is experimental control,
+Trust repeats the same rotation on the same mobs for hours. That is experimental control,
 and it is what makes an A/B gear comparison valid: swap one piece, let it run, compare. The recorder
 does not depend on Trust and never will — it is deliberately standalone so it stays read-only and
 shareable — but Trust is the cleanest way to generate comparable data.
@@ -348,4 +348,4 @@ it in), so it is not guessed:
   shows the current zone's setting.
 
 Every context row records the zone and all buffs, so the combat numbers can still show the
-difference afterwards. A sourced zone -> region table would replace the declarations: IDEAS #30.
+difference afterwards. A sourced zone -> region table would replace the declarations.

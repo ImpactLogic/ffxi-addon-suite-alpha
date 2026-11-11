@@ -1,9 +1,0 @@
-# Content (preview): trackers for the weapon grinds. Automation (cqshop and the auto* add-ons) is never listed here.
-name: Content (weapon grinds)
-desc: Odyssey, Ambuscade and Limbus progress trackers
-status: preview
-atlas: weapon-options
-part: charsync cmd=cs
-part: odyssey cmd=odo
-part: ambuscade cmd=amb box
-part: limbus cmd=lim box

@@ -2,7 +2,7 @@
 --and sends nothing. Replaces the closed-source Timers.dll plugin for recasts (buff timers stay in buffbox).
 _addon.name = 'timers'
 _addon.author = 'ImpactLogic'
-_addon.version = '0.1.4'   -- bump on every change that reaches the game
+_addon.version = '0.1.5'   -- bump on every change that reaches the game
 _addon.commands = {'timers', 'tm'}
 
 config = require('config')
@@ -112,7 +112,10 @@ local function toggle(key, a)
     if a == 'on' or a == 'off' then settings[key] = (a == 'on') else settings[key] = not settings[key] end
     config.save(settings)
     refresh()
-    msg(key .. ' ' .. (settings[key] and 'on' or 'off'))
+    local label = key == 'show_box' and 'box' or key
+    msg(label .. ' ' .. (settings[key] and 'on' or 'off')
+        .. (key == 'show_box' and settings[key] and ' (the box stays hidden until an ability or spell is recasting)' or '')
+        .. ((key ~= 'show_box' and key ~= 'bars' and a == nil) and ' (this command flips it; add on or off to set it)' or ''))
 end
 
 local function handle(cmd, ...)

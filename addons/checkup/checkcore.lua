@@ -10,16 +10,16 @@ local DAY = 86400
 -- IDEAS #51: facts only an NPC or a menu tells you. `date_col` is the column holding the date the
 -- fact was read (the newest row wins). `how` is what to do in game when it is missing or stale.
 core.SETUP = {
-    {id = 'coalitions', label = 'Ionis coalitions', file = 'buffbox/data/<Char>/coalitions.tsv', date_col = 3,
+    {id = 'coalitions', addon = 'buffbox', optional = true, label = 'Ionis coalitions', file = 'buffbox/data/<Char>/coalitions.tsv', date_col = 3,
      stale = 14, how = 'ask the six Adoulin Civil Registrars "The State of the <name> Coalition" (buffbox loaded)'},
-    {id = 'points', label = 'merits and job points', file = 'charsync/data/<Char>/points.tsv', date_col = 1,
+    {id = 'points', addon = 'charsync', label = 'merits and job points', file = 'charsync/data/<Char>/points.tsv', date_col = 1,
      stale = 7, how = 'load charsync (//lua l charsync): it saves points.tsv on load'},
-    {id = 'currencies', label = 'currencies', file = 'charsync/data/<Char>/currencies.tsv', date_col = 1,
+    {id = 'currencies', addon = 'charsync', label = 'currencies', file = 'charsync/data/<Char>/currencies.tsv', date_col = 1,
      stale = 7, how = 'open the Currencies menu, both pages (charsync loaded)'},
-    {id = 'rema', label = 'REMA weapons', file = 'charsync/data/<Char>/rema.tsv', date_col = 1,
+    {id = 'rema', addon = 'charsync', label = 'REMA weapons', file = 'charsync/data/<Char>/rema.tsv', date_col = 1,
      stale = 7, how = '//charsync (it scans REMA weapons with every snapshot)'},
     -- charsync's snapshot has one date, in its header: `date_key` finds it instead of a column.
-    {id = 'charsync', label = 'character snapshot', file = 'charsync/data/<Char>/snapshot.tsv', date_key = 'captured=',
+    {id = 'charsync', addon = 'charsync', label = 'character snapshot', file = 'charsync/data/<Char>/snapshot.tsv', date_key = 'captured=',
      stale = 7, how = 'load charsync (//lua l charsync): it saves on load, login and zoning'},
 }
 -- On the list in IDEAS #51 but not readable yet: each needs its wording recorded first (evidence rule).
@@ -75,12 +75,18 @@ end
 function core.setup(read, char, now)
     local out = {}
     for _, item in ipairs(core.SETUP) do
+      -- A fact whose add-on is not installed is not a to-do: the player cannot act on it.
+      if not item.addon or read(item.addon .. '/' .. item.addon .. '.lua') then
         local text = read(sub(item.file, char))
         local date = text and (item.date_key and text:match(item.date_key:gsub('%p', '%%%0') .. '(%d%d%d%d%-%d%d%-%d%d)')
             or item.date_col and core.newest_date(text, item.date_col))
         local age = date and core.days_old(date, now)
         local st = not date and 'missing' or (age > item.stale and 'stale') or 'ok'
+        -- An endgame-only fact the player never recorded is not a to-do.
+        if not (item.optional and st == 'missing') then
         out[#out + 1] = {id = item.id, label = item.label, state = st, date = date, age = age, how = item.how}
+        end
+      end
     end
     return out
 end
@@ -89,6 +95,7 @@ end
 function core.recorders(read, char, now)
     local out = {}
     for _, r in ipairs(core.RECORDERS) do
+      if read(r.id .. '/' .. r.id .. '.lua') then   -- only recorders that are installed
         local found
         for back = 0, core.LOOKBACK do
             local day = os.date(r.utc and '!%Y-%m-%d' or '%Y-%m-%d', now - back * DAY)
@@ -97,6 +104,7 @@ function core.recorders(read, char, now)
         out[#out + 1] = {id = r.id, label = r.label,
             state = not found and 'none' or (found.back == 0 and 'today') or 'old',
             date = found and found.day, age = found and found.back}
+      end
     end
     return out
 end
@@ -163,8 +171,8 @@ function core.render(setup, recorders, addons, short)
     for _, r in ipairs(recorders) do
         if r.state ~= 'today' or not short then
             L[#L + 1] = r.state == 'today' and ('ok   %s: writing today'):format(r.label)
-                or r.state == 'old' and ('OFF? %s: last file %s (%s)'):format(r.label, r.date, ago(r.age))
-                or ('OFF? %s: no file in %d days'):format(r.label, core.LOOKBACK)
+                or r.state == 'old' and ('note %s: last file %s (%s)'):format(r.label, r.date, ago(r.age))
+                or ('note %s: nothing recorded in %d days (normal until recording is on)'):format(r.label, core.LOOKBACK)
         end
     end
     local versions = {}
@@ -208,11 +216,9 @@ function core.registry(reg, installed, word)
     local groups = {launch = {}, preview = {}, listed = {}, private = {}}
     local shown, counts, private_n = 0, {}, 0
     for _, r in ipairs(reg or {}) do
-        local is_auto = (r.role or ''):find('^automation') ~= nil
         local hay = (r.id .. ' ' .. (r.role or '') .. ' ' .. (r.goal or '') .. ' ' .. (r.purpose or '')):lower()
         local match
         if w == 'all' then match = true
-        elseif w == 'automation' then match = is_auto
         else match = not w or w == r.status or hay:find(w, 1, true) ~= nil end
         if match then
             local g = r.public or 'listed'
@@ -235,7 +241,7 @@ function core.registry(reg, installed, word)
         end
     end
     if private_n > 0 then
-        L[#L + 1] = ('-- other (private): %d more, not shown: //ck addons all, or //ck addons automation --'):format(private_n)
+        L[#L + 1] = ('-- %d more not shown: //ck addons all --'):format(private_n)
     end
     local summary = {}
     for _, k in ipairs({'proven', 'offline', 'copy', 'idea', 'retired'}) do

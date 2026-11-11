@@ -26,7 +26,7 @@
 
 _addon.name = 'CombatLog'
 _addon.author = 'ImpactLogic'
-_addon.version = '1.4.2'   -- 1.4.0: obeys the //rec master switch
+_addon.version = '1.4.3'   -- 1.4.0: obeys the //rec master switch
 _addon.commands = {'combatlog', 'cbt'}
 
 config = require('config')
@@ -1105,7 +1105,7 @@ local function handle(cmd, ...)
         msg('recording ' .. (state.recording and 'ON' or 'OFF until the next load or //cbt on'))
     elseif cmd == 'status' then
         show({('CombatLog %s  char %s  %s'):format(_addon.version, tostring(state.char),
-                (not master_on()) and 'NOT recording: the //rec master switch is off (//rec on)' or state.recording and 'RECORDING' or 'paused'),
+                (not master_on()) and 'NOT recording: recording is off. To turn it on, load checkup (//lua l checkup), then type //rec on combatlog' or state.recording and 'RECORDING' or 'paused'),
               ('  session: %d action rows, %d context rows'):format(state.session.actions, state.session.ctx),
               ('  incoming actions: %s   context every %ss'):format(
                 settings.include_incoming and 'recorded' or 'ignored', tostring(settings.context_secs)),
@@ -1239,7 +1239,7 @@ end)
 
 windower.register_event('load', guarded('load', function()
     msg('loaded version ' .. _addon.version .. '  (//cbt)  READ-ONLY recorder - '
-        .. ((not master_on()) and 'NOT recording: the //rec master switch is off (//rec on)' or state.recording and 'RECORDING' or 'NOT recording (//cbt on)'))
+        .. ((not master_on()) and 'NOT recording: recording is off. To turn it on, load checkup (//lua l checkup), then type //rec on combatlog' or state.recording and 'RECORDING' or 'NOT recording (//cbt on)'))
     start_ctx()
     -- Declared region-buff zones, read now rather than mid-fight.
     local okr, err = pcall(load_regions)

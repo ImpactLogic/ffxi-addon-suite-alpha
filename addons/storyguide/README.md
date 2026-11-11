@@ -1,4 +1,4 @@
-# Story Guide 0.18.0
+# Story Guide 0.18.1
 
 Track your place in FFXI missions and quests. The release includes 23 storyline lists and a local progress display. Missions without original step text show their name and an empty steps view.
 
