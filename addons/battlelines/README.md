@@ -55,14 +55,14 @@ How fights and rates are counted:
 Saved fights: `data/fights.tsv`, one line per player per view per ability (time, fight, mob, seconds, view, player,
 ability, total, uses), rolled to `fights.old.tsv` past 1 MB. It is for later analysis (atlas), not read by the addon.
 
-Pictures (IDEAS #69): on the PC run `python tools/battlelines_snap.py` (add `--open` to see the gallery). Per fight it writes
+Pictures: on the PC run `python tools/battlelines_snap.py` (add `--open` to see the gallery). Per fight it writes
 `data/snapshots/<date>_<time>_<mob>.png` (the card: damage, taken, healing bars, ready to post) and `.html` (the full
 report with every player's abilities, click to expand), plus an `index.html` gallery. PNGs come from headless Edge or
 Chrome; with neither it writes the HTML only. `--last N` redraws the newest N, `--all` everything. Rates there are
 amount / fight length (the file has no per-player active time); deaths are not saved.
 
 Limits: only actions the client receives are seen (out of range or another zone is missing); the game exposes only
-mob HP%, so there is no "damage vs HP". Planned: an enmity view (IDEAS #67).
+mob HP%, so there is no "damage vs HP". Planned: an enmity view.
 
 Files: `core.lua` (engine, pure Lua), `battlelines.lua` (Windower side). Offline tests: `luajit tools/test-battlelines.lua`
 (engine, 83 checks) and `luajit tools/test-battlelines-glue.lua` (the addon with a mocked Windower, 43 checks).

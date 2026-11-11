@@ -24,5 +24,3 @@ SOFTWARE.
 This licence covers the first-party code and documents of this project only.
 The forks of other people's addons keep their own licences: see
 THIRD-PARTY-NOTICES.md and the header at the top of each fork's source files.
-Offhand (tools/pad-launcher) has its own LICENSE and THIRD-PARTY-NOTICES.md.
-The Story Guide tracks data pack is wiki-derived text under CC BY-NC-SA 3.0, not MIT: see release/packs/storyguide-tracks/README.md and CREDITS.md.

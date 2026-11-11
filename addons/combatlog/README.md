@@ -11,13 +11,13 @@
 
 ## Other things to know before you rely on it
 
-- **The master-switch hook is new in 1.4.0 and has only been tested offline** (`tools/test-recording.lua` and the source checks in it, 16 checks). It has not been run in the game yet. Evidence: `registry/addons.tsv` has no last-seen-in-game date for combatlog.
+- **The master-switch hook is new in 1.4.0 and has only been tested offline** (16 offline checks). It has not been run in the game yet.
 - **After you update the files, reload it:** `//lua r combatlog`. `//rec on|off` itself needs no reload (the switch file is re-read every 10 seconds).
 - **Memory:** about 20 MB of Lua memory per game client once loaded, flat across 12 days of samples (`data/heap.csv`: 19.69 to 19.72 MB for the main character, 2026-10-17 to 2026-10-28; peak 20.03 MB). No growth was seen; the cause of the 20 MB was not investigated.
-- **Two clients share one `data/settings.xml`:** a save from one client can rewrite the other character's section from a stale copy (IDEAS #23). Recording on/off is therefore never saved there.
+- **Two clients share one `data/settings.xml`:** a save from one client can rewrite the other character's section from a stale copy. Recording on/off is therefore never saved there.
 
 **Read-only** recorder of your own combat actions, so gear questions can be answered with
-measurements instead of theorycraft. See IDEAS.md #22.
+measurements instead of theorycraft.
 
 It records, and shows you how you are fighting. No automation, no advice; the box is a live
 readout (below) plus a warning when an expected buff (e.g. Signet) is missing while you fight.
@@ -301,11 +301,11 @@ Nothing here is written from memory, per AGENTS.md:
 `//cbt summary` reports hit rate as a Wilson 95% interval, e.g. `80.0% (95% CI 72.2-86.0, n=125)`.
 This is deliberate. 8 hits out of 10 and 800 out of 1000 are the same rate and completely different
 evidence, and a gear change made on the first is a change made on noise. Any UI built on this data
-should keep showing n. IDEAS #22 has the sample-size discussion.
+should keep showing n.
 
 ## Why run it with Trust
 
-Trust (IDEAS #5) repeats the same rotation on the same mobs for hours. That is experimental control,
+Trust repeats the same rotation on the same mobs for hours. That is experimental control,
 and it is what makes an A/B gear comparison valid: swap one piece, let it run, compare. The recorder
 does not depend on Trust and never will — it is deliberately standalone so it stays read-only and
 shareable — but Trust is the cleanest way to generate comparable data.
@@ -348,4 +348,4 @@ it in), so it is not guessed:
   shows the current zone's setting.
 
 Every context row records the zone and all buffs, so the combat numbers can still show the
-difference afterwards. A sourced zone -> region table would replace the declarations: IDEAS #30.
+difference afterwards. A sourced zone -> region table would replace the declarations.

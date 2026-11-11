@@ -67,7 +67,7 @@ installs keep recording; the public package ships `all=off`. Flip it with `//rec
 (command lives in checkup). ffxilogger and pricelog follow within 10 seconds; Harness reads it at load
 (`//lua r harness` after a change). Offline test: `luajit tools/test-recording.lua`.
 
-## Text dedupe (0.5.3, IDEAS #219)
+## Text dedupe (0.5.3)
 
 `boxpanel` now makes the Windower text library skip a `text(box, str)` call whose string equals the last one given to
 the same box, so boxes that refresh every tick stop redrawing unchanged text (28 call sites, 25 addons, two clients).

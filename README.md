@@ -57,6 +57,8 @@ Each add-on's own README has the full command list and file list. Every one also
 
 Also included: `templates/addon/`, a starting folder for writing your own add-on.
 
+The add-on READMEs sometimes mention `tools/...` test scripts and the author's research notes. Those live in the author's private development repository and are not in this package; you do not need them to use the add-ons.
+
 ## Story Guide: a tracker, no walkthrough text
 
 Story Guide in this package lists every mission and quest of 23 storylines by name and in order (`skeleton/`), tracks where you are and what you have ticked, and says "No step text for this mission yet" where nothing has been written. It does not include a walkthrough: no text copied from any website ships, and no data pack is published. Short step lines in our own words, written from play, go in `addons/storyguide/own/` (see the README there) and appear over the list as they are added. Reading your position straight from the game needs id tables built from XIchecklist, whose author's licence is being confirmed, so until then you confirm where you are with `//sg at <mission>`.
