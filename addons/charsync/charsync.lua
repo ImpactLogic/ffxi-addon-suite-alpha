@@ -30,7 +30,7 @@
 -- ffxi-atlas `store.pack pull` copies snapshot.tsv into the character pack.
 _addon.name = 'charsync'
 _addon.author = 'ImpactLogic'
-_addon.version = '0.3.26'   -- bump on every change that reaches the game
+_addon.version = '0.3.27'   -- bump on every change that reaches the game
 _addon.commands = {'charsync', 'cs'}
 
 config = require('config')
@@ -62,7 +62,8 @@ local defaults = {
     log_max_kb = 256,
     temprix_capture = false, -- OFF by default: it saves nearby chat text for two minutes after a Temprix menu
     sortie_capture = false, -- OFF by default: separate Sortie client-view capture, //cs sortie on to enable
-    spell_capture = true, -- passive learned API flags; not castability/removal proof
+    spell_capture = false, -- OFF by default: learned-spell flags, //cs spells on to enable
+    passive_capture = false, -- OFF by default: raw login/zoning packets into passive.tsv, //cs passive on to enable
     keep_days = 60,
     -- Currency fields named by //charsync rema: case-insensitive substrings of the names packets.parse gives
     -- 0x113 / 0x118. Every numeric field is written to currencies.tsv whatever this says.
@@ -538,7 +539,7 @@ windower.register_event('incoming chunk', guarded('incoming', function(id, data,
         end
         return
     end
-    if not injected and passivecore.key_of(id, data) and current_char() then
+    if settings.passive_capture and not injected and passivecore.key_of(id, data) and current_char() then
         local dir = char_dir()
         if not state.passive then
             local f = io.open(dir .. 'passive.tsv', 'r')
@@ -786,7 +787,11 @@ local function handle(cmd, ...)
             msg(masterycore.summary(row))
         else msg('Mastery Rank: not logged in') end
     elseif cmd == 'passive' then
-        if current_char() then
+        a = a and a:lower()
+        if a == 'on' or a == 'off' then
+            settings.passive_capture = a == 'on' config.save(settings)
+            msg('Passive packet capture ' .. a .. (a == 'on' and ' (login/zoning packets are kept raw in passive.tsv)' or ''))
+        elseif current_char() then
             local f = io.open(char_dir() .. 'passive.tsv', 'r')
             local rows = passivecore.parse(f and f:read('*a') or nil)
             if f then f:close() end
@@ -863,6 +868,7 @@ windower.register_event('load', guarded('load', function()
         ' on sync; //cs sortie on|off; separate state/history, no permanent inventory changes')
     msg('Learned spell API capture '..(settings.spell_capture and 'on' or 'off')..
         ' on sync; //cs spells on|off; history retained, current castability unknown')
+    msg('Passive packet capture '..(settings.passive_capture and 'on' or 'off')..'; //cs passive on|off')
     -- Temprix pickup is silent: the 0x034 hook records and decodes without chat output (//cs temprix to look).
     msg('Progress receipts on: unchanged raw pages record last received separately; //cs progress for dates, no requests sent')
     if current_char() then sync('load') end

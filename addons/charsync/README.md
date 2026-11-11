@@ -20,7 +20,7 @@ It reads what the client already holds; nothing is ever sent.
 ```
 //charsync            write a snapshot now and say what it held (also: //cs)
 //charsync roe        RoE observation dates and completion-page coverage
-//charsync passive    which login/zoning packets have arrived (zones, monstrosity, MMM, crafts, title)
+//charsync passive [on|off]   (off by default) which login/zoning packets have arrived (zones, monstrosity, MMM, crafts, title)
 //charsync warps      how many home points, survival guides and waypoints the client says are set
 //charsync warps have|missing [home|guides|waypoints]   which ones, by place name
 //charsync status     all saved capture dates and refresh instructions
@@ -119,7 +119,7 @@ Incoming 0x063 with order 6 (byte 5) carries 128-bit masks for home points (zero
 
 ## Passive captures (0.3.13)
 
-Packets the client sends by itself at login or zoning are kept raw in `passive.tsv` (newest copy of each, header sequence number ignored; a change appends to size-capped `passive-history.tsv`): 0x008 visited zones, 0x063 orders 3 and 4 monstrosity, 0x0AD Moblin Maze Mongers, 0x062 crafting skills, 0x061 player info and title. The player does nothing; `//cs passive` lists which have arrived, so a setup screen can show "captured" without asking for a click. The packet list comes from the XIchecklist add-on's handlers, and each of these arrived in our Harness captures on every zone-in (3 characters, 2026-10-17). What each one means is that add-on's claim, not decoded or verified here.
+**Off by default** (`//cs passive on` to enable). Packets the client sends by itself at login or zoning are then kept raw in `passive.tsv` (newest copy of each, header sequence number ignored; a change appends to size-capped `passive-history.tsv`): 0x008 visited zones, 0x063 orders 3 and 4 monstrosity, 0x0AD Moblin Maze Mongers, 0x062 crafting skills, 0x061 player info and title. The player does nothing; `//cs passive` lists which have arrived, so a setup screen can show "captured" without asking for a click. The packet list comes from the XIchecklist add-on's handlers, and each of these arrived in our Harness captures on every zone-in (3 characters, 2026-10-17). What each one means is that add-on's claim, not decoded or verified here.
 
 ## Temprix progress capture (0.3.6)
 
